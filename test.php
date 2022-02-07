@@ -2,15 +2,22 @@
 
 require_once 'src/Task.php';
 
-$strategy = new Task(1, 2);
+$strategy1 = new Task(1, 2);
 
-var_dump(assert($strategy->getNextStatus(Task::ACTION_CANCEL) === Task::STATUS_CANCELED));
-var_dump(assert($strategy->getNextStatus(Task::ACTION_RESPOND) === Task::STATUS_PROCESSING));
-var_dump(assert($strategy->getNextStatus(Task::ACTION_DONE) === Task::STATUS_DONE));
-var_dump(assert($strategy->getNextStatus(Task::ACTION_REFUSE) === Task::STATUS_FAILED));
+var_dump(assert($strategy1->getNextStatus(Task::ACTION_CONFIRM) === Task::STATUS_PROCESSING));
+var_dump(assert($strategy1->getNextStatus(Task::ACTION_CANCEL) === Task::STATUS_CANCELED));
+var_dump(assert($strategy1->getNextStatus(Task::ACTION_RESPOND) === Task::STATUS_NEW));
+var_dump(assert($strategy1->getNextStatus(Task::ACTION_DONE) === Task::STATUS_DONE));
+var_dump(assert($strategy1->getNextStatus(Task::ACTION_REFUSE) === Task::STATUS_FAILED));
 
-var_dump(assert($strategy->getAvailableAction(Task::STATUS_NEW) === [Task::ACTION_CANCEL, Task::ACTION_RESPOND]));
-var_dump(assert($strategy->getAvailableAction(Task::STATUS_PROCESSING) === [Task::ACTION_DONE, Task::ACTION_REFUSE]));
-var_dump(assert($strategy->getAvailableAction(Task::STATUS_FAILED) === []));
-var_dump(assert($strategy->getAvailableAction(Task::STATUS_DONE) === []));
-var_dump(assert($strategy->getAvailableAction(Task::STATUS_CANCELED) === []));
+$strategy2 = new Task(1, 2);
+// currentUserId = Заказчик - статус задания "Новый", исполнитель назначен
+var_dump(assert($strategy2->getAvailableAction(1) === [[Task::ACTION_CONFIRM, Task::ACTION_CANCEL]]));
+// currentUserId = Исполнитель - статус задания "Новый", исполнитель назначен
+var_dump(assert($strategy2->getAvailableAction(2) === [Task::ACTION_RESPOND]));
+
+$strategy3 = new Task(1, 2, Task::STATUS_PROCESSING);
+// currentUserId = Заказчик, статус задания "В работе", исполнитель назначен
+var_dump(assert($strategy3->getAvailableAction(1) === [Task::ACTION_DONE]));
+// currentUserId = Исполнитель, статус задания "В работе", исполнитель назначен
+var_dump(assert($strategy3->getAvailableAction(2) === [Task::ACTION_REFUSE]));
