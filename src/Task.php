@@ -8,14 +8,14 @@ class Task
     public const STATUS_DONE = 'done';
     public const STATUS_FAILED = 'failed';
 
-    public const ACTION_CONFIRM = 'confirm';
+    public const ACTION_START = 'start';
     public const ACTION_CANCEL = 'cancel';
     public const ACTION_RESPOND = 'respond';
     public const ACTION_DONE = 'done';
     public const ACTION_REFUSE = 'refuse';
 
     public const ACTION_STATUS_MAP = [
-        self::ACTION_CONFIRM => self::STATUS_PROCESSING,
+        self::ACTION_START => self::STATUS_PROCESSING,
         self::ACTION_CANCEL => self::STATUS_CANCELED,
         self::ACTION_RESPOND => self::STATUS_NEW,
         self::ACTION_DONE => self::STATUS_DONE,
@@ -58,7 +58,7 @@ class Task
     public function getActionsList(): array
     {
         return [
-            self::ACTION_CONFIRM => 'Принять',
+            self::ACTION_START => 'Начать задание',
             self::ACTION_CANCEL => 'Отменить',
             self::ACTION_RESPOND => 'Откликнуться',
             self::ACTION_DONE => 'Выполнено',
@@ -89,7 +89,7 @@ class Task
 
         if ($currentUserId === $this->customerId) {
             if ($this->status === self::STATUS_NEW) {
-                $actions[] = [self::ACTION_CONFIRM, self::ACTION_CANCEL];
+                $actions[] = [self::ACTION_START, self::ACTION_CANCEL];
             }
             if ($this->status === self::STATUS_PROCESSING) {
                 $actions[] = self::ACTION_DONE;
