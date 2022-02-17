@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Logic;
+
+use Exception;
+
 class Task
 {
     public const STATUS_NEW = 'new';

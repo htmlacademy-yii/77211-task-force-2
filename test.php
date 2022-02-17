@@ -1,6 +1,8 @@
 <?php
 
-require_once 'src/Task.php';
+use App\Logic\Task;
+
+require_once 'vendor/autoload.php';
 
 $strategy1 = new Task(1, 2);
 
