@@ -2,40 +2,39 @@
 
 namespace App\Logic;
 
+use App\Logic\Actions\ActionCancel;
+use App\Logic\Actions\ActionStart;
+use App\Logic\Actions\ActionDone;
+use App\Logic\Actions\ActionRefuse;
+use App\Logic\Actions\ActionRespond;
 use Exception;
 
 class Task
 {
-    public const STATUS_NEW = 'new';
-    public const STATUS_CANCELED = 'canceled';
-    public const STATUS_PROCESSING = 'processing';
-    public const STATUS_DONE = 'done';
-    public const STATUS_FAILED = 'failed';
-
-    public const ACTION_START = 'start';
-    public const ACTION_CANCEL = 'cancel';
-    public const ACTION_RESPOND = 'respond';
-    public const ACTION_DONE = 'done';
-    public const ACTION_REFUSE = 'refuse';
+    public const STATUS_NEW = 1;
+    public const STATUS_CANCELED = 2;
+    public const STATUS_PROCESSING = 3;
+    public const STATUS_DONE = 4;
+    public const STATUS_FAILED = 5;
 
     public const ACTION_STATUS_MAP = [
-        self::ACTION_START => self::STATUS_PROCESSING,
-        self::ACTION_CANCEL => self::STATUS_CANCELED,
-        self::ACTION_RESPOND => self::STATUS_NEW,
-        self::ACTION_DONE => self::STATUS_DONE,
-        self::ACTION_REFUSE => self::STATUS_FAILED
+        'start' => self::STATUS_PROCESSING,
+        'cancel' => self::STATUS_CANCELED,
+        'respond' => self::STATUS_NEW,
+        'done' => self::STATUS_DONE,
+        'refuse' => self::STATUS_FAILED
     ];
 
     private int $customerId;
     private ?int $executorId;
-    private string $status;
+    private int $status;
 
     /**
      * @param int $customerId
      * @param int|null $executorId
-     * @param string $status
+     * @param int $status
      */
-    public function __construct(int $customerId, int $executorId = null, string $status = self::STATUS_NEW)
+    public function __construct(int $customerId, int $executorId = null, int $status = self::STATUS_NEW)
     {
         $this->customerId = $customerId;
         $this->executorId = $executorId;
@@ -57,25 +56,11 @@ class Task
     }
 
     /**
-     * @return array
-     */
-    public function getActionsList(): array
-    {
-        return [
-            self::ACTION_START => 'Начать задание',
-            self::ACTION_CANCEL => 'Отменить',
-            self::ACTION_RESPOND => 'Откликнуться',
-            self::ACTION_DONE => 'Выполнено',
-            self::ACTION_REFUSE => 'Отказаться'
-        ];
-    }
-
-    /**
      * @param string $action
-     * @return string
+     * @return int
      * @throws Exception
      */
-    public function getNextStatus(string $action): string
+    public function getNextStatus(string $action): int
     {
         return array_key_exists(
             $action,
@@ -86,26 +71,41 @@ class Task
     /**
      * @param int $currentUserId
      * @return array
+     * @throws Exception
      */
-    public function getAvailableAction(int $currentUserId): array
+    public function getAvailableActions(int $currentUserId): array
     {
         $actions = [];
 
-        if ($currentUserId === $this->customerId) {
-            if ($this->status === self::STATUS_NEW) {
-                $actions[] = [self::ACTION_START, self::ACTION_CANCEL];
-            }
-            if ($this->status === self::STATUS_PROCESSING) {
-                $actions[] = self::ACTION_DONE;
-            }
-        }
-        if ($currentUserId === $this->executorId) {
-            if ($this->status === self::STATUS_NEW) {
-                $actions[] = self::ACTION_RESPOND;
-            }
-            if ($this->status === self::STATUS_PROCESSING) {
-                $actions[] = self::ACTION_REFUSE;
-            }
+        switch ($this->status) {
+            case self::STATUS_NEW:
+                if ((new ActionStart())->isCurrentUserCanAct($this->executorId, $this->customerId, $currentUserId)) {
+                    $actions[] = new ActionStart();
+                }
+
+                if ((new ActionCancel())->isCurrentUserCanAct($this->executorId, $this->customerId, $currentUserId)) {
+                    $actions[] = new ActionCancel();
+                }
+
+                if ((new ActionRespond())->isCurrentUserCanAct($this->executorId, $this->customerId, $currentUserId)) {
+                    $actions[] = new ActionRespond();
+                }
+                break;
+            case self::STATUS_PROCESSING:
+                if ((new ActionDone())->isCurrentUserCanAct($this->executorId, $this->customerId, $currentUserId)) {
+                    $actions[] = new ActionDone();
+                }
+
+                if ((new ActionRefuse())->isCurrentUserCanAct($this->executorId, $this->customerId, $currentUserId)) {
+                    $actions[] = new ActionRefuse();
+                }
+                break;
+            case self::STATUS_FAILED:
+            case self::STATUS_DONE:
+            case self::STATUS_CANCELED:
+                return [];
+            default:
+                throw new Exception("Неизвестный статус $this->status");
         }
 
         return $actions;
