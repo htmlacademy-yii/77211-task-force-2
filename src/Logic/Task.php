@@ -7,7 +7,8 @@ use App\Logic\Actions\ActionStart;
 use App\Logic\Actions\ActionDone;
 use App\Logic\Actions\ActionRefuse;
 use App\Logic\Actions\ActionRespond;
-use Exception;
+use App\Logic\Exceptions\ActionException;
+use App\Logic\Exceptions\StatusException;
 
 class Task
 {
@@ -58,20 +59,21 @@ class Task
     /**
      * @param string $action
      * @return int
-     * @throws Exception
+     * @throws ActionException
      */
     public function getNextStatus(string $action): int
     {
-        return array_key_exists(
-            $action,
-            self::ACTION_STATUS_MAP
-        ) ? self::ACTION_STATUS_MAP[$action] : throw new Exception("Unknown action $action");
+        if (!array_key_exists($action, self::ACTION_STATUS_MAP)) {
+            throw new ActionException("Неизвестное действие $action");
+        }
+
+        return self::ACTION_STATUS_MAP[$action];
     }
 
     /**
      * @param int $currentUserId
      * @return array
-     * @throws Exception
+     * @throws StatusException
      */
     public function getAvailableActions(int $currentUserId): array
     {
@@ -105,7 +107,7 @@ class Task
             case self::STATUS_CANCELED:
                 return [];
             default:
-                throw new Exception("Неизвестный статус $this->status");
+                throw new StatusException("Неизвестный статус $this->status");
         }
 
         return $actions;

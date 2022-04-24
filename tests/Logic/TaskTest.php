@@ -7,8 +7,9 @@ use App\Logic\Actions\ActionDone;
 use App\Logic\Actions\ActionRefuse;
 use App\Logic\Actions\ActionRespond;
 use App\Logic\Actions\ActionStart;
+use App\Logic\Exceptions\ActionException;
+use App\Logic\Exceptions\StatusException;
 use App\Logic\Task;
-use Exception;
 use PHPUnit\Framework\TestCase;
 
 class TaskTest extends TestCase
@@ -41,10 +42,11 @@ class TaskTest extends TestCase
     /**
      * @param int $status
      * @param string $action
-     * @throws Exception
+     * @return void
+     * @throws ActionException
      * @dataProvider statusesProvider
      */
-    public function testGetNextStatus(int $status, string $action)
+    public function testGetNextStatus(int $status, string $action): void
     {
         $this->assertEquals($status, $this->taskWithStatusNew->getNextStatus($action));
     }
@@ -75,10 +77,10 @@ class TaskTest extends TestCase
      * @param array $actions
      * @param int $currentUserId
      * @return void
-     * @throws Exception
+     * @throws StatusException
      * @dataProvider actionsForTaskWithStatusNewProvider
      */
-    public function testGetAvailableActionsForTaskWithStatusNew(array $actions, int $currentUserId)
+    public function testGetAvailableActionsForTaskWithStatusNew(array $actions, int $currentUserId): void
     {
         $this->assertEquals($actions, $this->taskWithStatusNew->getAvailableActions($currentUserId));
     }
@@ -87,12 +89,27 @@ class TaskTest extends TestCase
      * @param array $actions
      * @param int $currentUserId
      * @return void
-     * @throws Exception
+     * @throws StatusException
      * @dataProvider actionsForTaskWithStatusProcessingProvider
      */
-    public function testGetAvailableActionsForTaskWithStatusProcessing(array $actions, int $currentUserId)
+    public function testGetAvailableActionsForTaskWithStatusProcessing(array $actions, int $currentUserId): void
     {
         $this->assertEquals($actions, $this->taskWithStatusProcessing->getAvailableActions($currentUserId));
+    }
+
+    public function testStatusException()
+    {
+        $fakeStatus = '999';
+        $task = new Task(self::CUSTOMER_ID, self::EXECUTOR_ID, $fakeStatus);
+        $this->expectException(StatusException::class);
+        $task->getAvailableActions(self::CUSTOMER_ID);
+    }
+
+    public function testActionException()
+    {
+        $fakeAction = 'fake';
+        $this->expectException(ActionException::class);
+        $this->taskWithStatusNew->getNextStatus($fakeAction);
     }
 }
 
