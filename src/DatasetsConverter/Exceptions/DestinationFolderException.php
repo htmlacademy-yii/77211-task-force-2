@@ -1,0 +1,10 @@
+<?php
+
+namespace App\DatasetsConverter\Exceptions;
+
+use Exception;
+
+class DestinationFolderException extends Exception
+{
+
+}
