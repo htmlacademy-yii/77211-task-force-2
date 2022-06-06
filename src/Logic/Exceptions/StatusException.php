@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Logic\Exceptions;
+namespace Taskforce\Logic\Exceptions;
 
 use Exception;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DatasetsConverter\Exceptions;
+namespace Taskforce\DatasetsConverter\Exceptions;
 
 class SqlFileException extends \Exception
 {

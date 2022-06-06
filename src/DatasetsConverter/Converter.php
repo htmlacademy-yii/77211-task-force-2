@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DatasetsConverter;
+namespace Taskforce\DatasetsConverter;
 
 class Converter
 {

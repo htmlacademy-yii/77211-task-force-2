@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DatasetsConverter;
+namespace Taskforce\DatasetsConverter;
 
-use App\DatasetsConverter\Exceptions\SourceFileException;
+use Taskforce\DatasetsConverter\Exceptions\SourceFileException;
 use RuntimeException;
 use SplFileObject;
 

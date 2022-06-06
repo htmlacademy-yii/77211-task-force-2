@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Logic;
+namespace Taskforce\Logic;
 
-use App\Logic\Actions\ActionCancel;
-use App\Logic\Actions\ActionStart;
-use App\Logic\Actions\ActionDone;
-use App\Logic\Actions\ActionRefuse;
-use App\Logic\Actions\ActionRespond;
-use App\Logic\Exceptions\ActionException;
-use App\Logic\Exceptions\StatusException;
+use Taskforce\Logic\Actions\ActionCancel;
+use Taskforce\Logic\Actions\ActionStart;
+use Taskforce\Logic\Actions\ActionDone;
+use Taskforce\Logic\Actions\ActionRefuse;
+use Taskforce\Logic\Actions\ActionRespond;
+use Taskforce\Logic\Exceptions\ActionException;
+use Taskforce\Logic\Exceptions\StatusException;
 
 class Task
 {
