@@ -1,9 +1,9 @@
 <?php
 
-namespace App\DatasetsConverter;
+namespace Taskforce\DatasetsConverter;
 
-use App\DatasetsConverter\Exceptions\DestinationFolderException;
-use App\DatasetsConverter\Exceptions\SqlFileException;
+use Taskforce\DatasetsConverter\Exceptions\DestinationFolderException;
+use Taskforce\DatasetsConverter\Exceptions\SqlFileException;
 
 class SqlCreator
 {

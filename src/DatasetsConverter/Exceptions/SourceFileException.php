@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DatasetsConverter\Exceptions;
+namespace Taskforce\DatasetsConverter\Exceptions;
 
 use Exception;
 

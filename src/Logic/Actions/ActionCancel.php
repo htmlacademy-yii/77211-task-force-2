@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Logic\Actions;
+namespace Taskforce\Logic\Actions;
 
 class ActionCancel extends AbstractAction
 {
