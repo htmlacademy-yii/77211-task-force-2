@@ -44,6 +44,9 @@ $config = [
                 ],
             ],
         ],
+        'formatter' => [
+            'locale' => 'ru-RU'
+        ],
         'db' => $db,
         /*
         'urlManager' => [
