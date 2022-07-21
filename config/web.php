@@ -45,7 +45,8 @@ $config = [
             ],
         ],
         'formatter' => [
-            'locale' => 'ru-RU'
+            'locale' => 'ru-RU',
+            'defaultTimeZone' => 'Europe/Moscow',
         ],
         'db' => $db,
         /*
