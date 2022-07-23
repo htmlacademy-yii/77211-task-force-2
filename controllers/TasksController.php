@@ -56,6 +56,9 @@ class TasksController extends Controller
             'query' => $query,
             'pagination' => [
                 'pageSize' => 5,
+                'forcePageParam' => false,
+                'pageSizeParam' => false,
+                'route' => 'tasks'
             ],
             'sort' => [
                 'defaultOrder' => [

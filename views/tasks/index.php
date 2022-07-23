@@ -56,7 +56,7 @@ use yii\widgets\ListView;
         <div class="search-form">
             <?php $form = ActiveForm::begin([
                 'method' => 'get',
-                'action' => Url::to(['tasks/index']),
+                'action' => '/tasks',
                 'id' => false,
             ]) ?>
 
