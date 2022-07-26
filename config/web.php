@@ -59,7 +59,8 @@ $config = [
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
             'rules' => [
-
+                'tasks/view/<id:\d+>' => 'tasks/view',
+                'user/view/<id:\d+>' => 'user/view',
             ],
         ],
     ],
