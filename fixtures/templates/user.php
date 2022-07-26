@@ -4,9 +4,7 @@
  * @var $faker \Faker\Generator
  */
 
-use app\models\City;
-
-$citiesCount = City::find()->count();
+$citiesCount = 1087;
 
 return [
     'email' => $faker->unique()->email(),
@@ -21,7 +19,7 @@ return [
     'telegram' => "@{$faker->userName()}",
     'role' => $faker->numberBetween(0, 1),
     'status' => $faker->numberBetween(0, 1),
-    'last_activity_at' => $faker->dateTimeBetween('-2 week', 'now')->format('Y-m-d H:i:s'),
+    'created_at' => $faker->dateTimeBetween('-1 week', 'now')->format('Y-m-d H:i:s'),
     'failed_tasks_count' => $faker->numberBetween(0, 5),
     'show_only_customer' => $faker->numberBetween(0, 1),
 ];

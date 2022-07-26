@@ -4,10 +4,10 @@
  * @var $faker \Faker\Generator
  */
 
-$filesCount = \app\models\File::find()->count();
-$tasksCount = \app\models\Task::find()->count();
+$filesCount = 100;
+$tasksCount = 20;
 
 return [
-    'task_id' => $faker->unique()->numberBetween(1, $tasksCount),
-    'file_id' => $faker->unique()->numberBetween(1, $filesCount),
+    'task_id' => $faker->numberBetween(1, $tasksCount),
+    'file_id' => $faker->numberBetween(1, $filesCount),
 ];
