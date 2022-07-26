@@ -11,7 +11,6 @@
 use app\models\TasksFilterForm;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\ListView;
 
@@ -56,7 +55,7 @@ use yii\widgets\ListView;
         <div class="search-form">
             <?php $form = ActiveForm::begin([
                 'method' => 'get',
-                'action' => '/tasks',
+                'action' => ['tasks/index'],
                 'id' => false,
             ]) ?>
 

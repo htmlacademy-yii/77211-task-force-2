@@ -11,6 +11,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class TasksController extends Controller
 {
@@ -24,10 +25,10 @@ class TasksController extends Controller
         $filterForm = new TasksFilterForm();
         $filterForm->load(Yii::$app->request->get());
 
-        $selectedCategories = $filterForm->categories;
-        $isWithoutResponses = $filterForm->withoutResponse;
-        $isRemote = $filterForm->remote;
-        $period = (int) $filterForm->period;
+        $selectedCategories = Yii::$app->request->get('categories');
+        $isRemote = Yii::$app->request->get('remote');
+        $isWithoutResponses = Yii::$app->request->get('withoutResponse');
+        $period = (int) Yii::$app->request->get('period');
 
         $query = Task::find()
             ->where(['status' => TaskLogic::STATUS_NEW])
@@ -58,7 +59,6 @@ class TasksController extends Controller
                 'pageSize' => 5,
                 'forcePageParam' => false,
                 'pageSizeParam' => false,
-                'route' => 'tasks'
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -71,6 +71,31 @@ class TasksController extends Controller
             'tasksDataProvider' => $tasksDataProvider,
             'filterForm' => $filterForm,
             'categoriesList' => $categoriesList,
+        ]);
+    }
+
+    public function actionView(int $id): string
+    {
+
+        $task = Task::findOne($id);
+
+        if (!$task) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->view->title = "$task->title :: Taskforce";
+
+        $taskStatusName = TaskLogic::getStatusesList()[$task->status];
+
+        $responses = Response::find()
+            ->where(['task_id' => $id])
+            ->with('executor.avatarFile', 'executor.reviewsWhereUserIsReceiver')
+            ->all();
+
+        return $this->render('view', [
+            'task' => $task,
+            'taskStatusName' => $taskStatusName,
+            'responses' => $responses,
         ]);
     }
 }
