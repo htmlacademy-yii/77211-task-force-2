@@ -32,6 +32,12 @@ use yii\db\ActiveRecord;
  */
 class Task extends ActiveRecord
 {
+    public const STATUS_NEW = 1;
+    public const STATUS_CANCELED = 2;
+    public const STATUS_PROCESSING = 3;
+    public const STATUS_DONE = 4;
+    public const STATUS_FAILED = 5;
+
     /**
      * {@inheritdoc}
      */
@@ -173,5 +179,19 @@ class Task extends ActiveRecord
     {
         return $this->hasMany(File::class, ['id' => 'file_id'])
             ->viaTable('task_file', ['task_id' => 'id']);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTaskStatusesList(): array
+    {
+        return [
+            self::STATUS_NEW => 'Новое',
+            self::STATUS_CANCELED => 'Отменено',
+            self::STATUS_PROCESSING => 'В работе',
+            self::STATUS_DONE => 'Выполнено',
+            self::STATUS_FAILED => 'Провалено'
+        ];
     }
 }
