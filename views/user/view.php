@@ -117,7 +117,7 @@ use yii\helpers\Url;
             <dt>Дата регистрации</dt>
             <dd><?= Yii::$app->formatter->asRelativeTime($user->created_at) ?></dd>
             <dt>Статус</dt>
-            <dd><?= $user->getStatusesList()[$user->status] ?></dd>
+            <dd><?= $user->getUserStatusesList()[$user->status] ?></dd>
         </dl>
     </div>
     <div class="right-card white">
