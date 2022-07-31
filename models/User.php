@@ -2,9 +2,11 @@
 
 namespace app\models;
 
+use Taskforce\Logic\Task as TaskLogic;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -22,8 +24,8 @@ use yii\web\IdentityInterface;
  * @property string|null $phone
  * @property string|null $telegram
  * @property int $role
- * @property int|null $status
- * @property string $last_activity_at
+ * @property int $status
+ * @property string $created_at
  * @property int $failed_tasks_count
  * @property int $show_only_customer
  *
@@ -36,6 +38,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public const STATUS_READY = 0;
+    public const STATUS_BUSY = 1;
+
     /**
      * {@inheritdoc}
      */
@@ -51,7 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['email', 'password', 'name', 'city_id'], 'required'],
-            [['birthdate', 'last_activity_at'], 'safe'],
+            [['birthdate', 'created_at'], 'safe'],
             [['info'], 'string'],
             [['avatar_file_id', 'city_id', 'role', 'status', 'failed_tasks_count', 'show_only_customer'], 'integer'],
             [['rating'], 'number'],
@@ -95,7 +100,7 @@ class User extends ActiveRecord implements IdentityInterface
             'telegram' => 'Telegram',
             'role' => 'Role',
             'status' => 'Status',
-            'last_activity_at' => 'Last Activity At',
+            'created_at' => 'Created At',
             'failed_tasks_count' => 'Failed Tasks Count',
             'show_only_customer' => 'Show Only Customer',
         ];
@@ -129,6 +134,26 @@ class User extends ActiveRecord implements IdentityInterface
     public function getResponses(): ActiveQuery
     {
         return $this->hasMany(Response::class, ['executor_id' => 'id'])->inverseOf('executor');
+    }
+
+    /**
+     * Gets query for [[ReviewsWhereUserIsAuthor]].
+     *
+     * @return ActiveQuery
+     */
+    public function getReviewsWhereUserIsAuthor(): ActiveQuery
+    {
+        return $this->hasMany(Review::class, ['author_id' => 'id'])->inverseOf('author');
+    }
+
+    /**
+     * Gets query for [[ReviewsWhereUserIsReceiver]].
+     *
+     * @return ActiveQuery
+     */
+    public function getReviewsWhereUserIsReceiver(): ActiveQuery
+    {
+        return $this->hasMany(Review::class, ['user_id' => 'id'])->inverseOf('user');
     }
 
     /**
@@ -212,5 +237,45 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword(string $password): bool
     {
         return $this->password === $password;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAge(): int
+    {
+        return date_diff(date_create($this->birthdate), date_create('now'))->y;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatusesList(): array
+    {
+        return [
+            self::STATUS_READY => 'Открыт для новых заказов',
+            self::STATUS_BUSY => 'Занят',
+        ];
+    }
+
+    /**
+     * @return int
+     */
+    public function getCompletedTasksCount(): int
+    {
+        return Task::find()
+            ->where(['executor_id' => $this->id])
+            ->andWhere(['status' => TaskLogic::STATUS_DONE])
+            ->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlaceInRating(): int
+    {
+        return self::find()
+            ->where(['>', 'rating', $this->rating])
+            ->count() + 1;
     }
 }

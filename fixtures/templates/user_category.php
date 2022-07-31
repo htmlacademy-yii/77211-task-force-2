@@ -4,11 +4,8 @@
  * @var $faker \Faker\Generator
  */
 
-use app\models\Category;
-use app\models\User;
-
-$categoriesCount = Category::find()->count();
-$usersCount = User::find()->count();
+$categoriesCount = 8;
+$usersCount = 10;
 
 return [
     'user_id' => $faker->numberBetween(1, $usersCount),

@@ -5,5 +5,5 @@
  */
 
 return [
-    'path' => $faker->imageUrl(800, 800, 'animals', true, 'dogs', false),
+    'path' => $faker->imageUrl(600, 600, 'images', true, 'fake', false),
 ];

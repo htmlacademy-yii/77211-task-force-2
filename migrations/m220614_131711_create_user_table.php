@@ -22,8 +22,8 @@ class m220614_131711_create_user_table extends Migration
             'phone' => $this->string(32),
             'telegram' => $this->string(64),
             'role' => $this->tinyInteger()->defaultValue(1)->notNull(),
-            'status' => $this->tinyInteger(),
-            'last_activity_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
+            'status' => $this->tinyInteger()->defaultValue(0)->notNull(),
+            'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
             'failed_tasks_count' => $this->integer()->defaultValue(0)->notNull(),
             'show_only_customer' => $this->boolean()->defaultValue(0)->notNull()
         ]);

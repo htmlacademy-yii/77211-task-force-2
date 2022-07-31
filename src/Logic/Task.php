@@ -45,7 +45,7 @@ class Task
     /**
      * @return array
      */
-    public function getStatusesList(): array
+    public static function getStatusesList(): array
     {
         return [
             self::STATUS_NEW => 'Новое',

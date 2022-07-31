@@ -11,7 +11,6 @@
 use app\models\TasksFilterForm;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\ListView;
 
@@ -56,7 +55,7 @@ use yii\widgets\ListView;
         <div class="search-form">
             <?php $form = ActiveForm::begin([
                 'method' => 'get',
-                'action' => Url::to(['tasks/index']),
+                'action' => ['tasks/index'],
                 'id' => false,
             ]) ?>
 
@@ -95,8 +94,14 @@ use yii\widgets\ListView;
                     '1' => '1 час',
                     '12' => '12 часов',
                     '24' => '24 часа',
-                ], [
-                    'prompt' => 'Выбери период'
+                ],
+                [
+                    'prompt' => [
+                        'text' => 'Выбери период',
+                        'options' => [
+                            'value' => '0',
+                        ]
+                    ],
                 ])
                 ->label(false) ?>
 

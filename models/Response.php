@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
  * @property string|null $comment
  * @property int|null $budget
  * @property int $is_refused
+ * @property string $created_at
  *
  * @property User $executor
  * @property Task $task
@@ -37,6 +38,7 @@ class Response extends ActiveRecord
             [['task_id', 'executor_id'], 'required'],
             [['task_id', 'executor_id', 'budget', 'is_refused'], 'integer'],
             [['comment'], 'string'],
+            [['created_at'], 'safe'],
             [
                 ['executor_id'],
                 'exist',
@@ -66,6 +68,7 @@ class Response extends ActiveRecord
             'comment' => 'Comment',
             'budget' => 'Budget',
             'is_refused' => 'Is Refused',
+            'created_at' => 'Created At',
         ];
     }
 
