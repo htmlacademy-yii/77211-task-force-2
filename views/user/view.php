@@ -18,7 +18,11 @@ use yii\helpers\Url;
     <h3 class="head-main"><?= Html::encode($user->name) ?></h3>
     <div class="user-card">
         <div class="photo-rate">
-            <img class="card-photo" src="<?= $user->avatarFile->path ?>" width="191" height="190" alt="Фото пользователя">
+            <?php if ($user->avatarFile): ?>
+                <img class="card-photo" src="<?= $user->avatarFile->path ?>" width="191" height="190" alt="Фото пользователя">
+            <?php else: ?>
+                <img class="card-photo" src="https://via.placeholder.com/191x190.png/?text=no+photo" width="191" height="190" alt="Фото пользователя">
+            <?php endif; ?>
             <div class="card-rate">
                 <div class="stars-rating big">
                     <?= Stars::widget(['rating' => $user->rating]) ?>

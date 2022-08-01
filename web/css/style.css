@@ -957,6 +957,8 @@ template {
   .black-list a {
     color: inherit;
     text-decoration: none }
+  .black-list a:hover {
+    text-decoration: underline }
 
 .enumeration-list {
   list-style: none;
