@@ -30,6 +30,8 @@ use yii\web\IdentityInterface;
  * @property File $avatarFile
  * @property City $city
  * @property Response[] $responses
+ * @property Review[] $reviewsWhereUserIsAuthor
+ * @property Review[] $reviewsWhereUserIsReceiver
  * @property Task[] $tasksWhereUserIsCustomer
  * @property Task[] $tasksWhereUserIsExecutor
  * @property Category[] $categories
