@@ -9,6 +9,7 @@
 
 use app\models\Response;
 use app\models\Task;
+use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -38,16 +39,7 @@ use yii\helpers\Url;
                     </a>
                     <div class="response-wrapper">
                         <div class="stars-rating small">
-                            <?php
-                            $rating = round($response->executor->rating);
-                            for ($i = 1; $i <= 5; $i++) {
-                                if ($rating >= $i) {
-                                    echo '<span class="fill-star">&nbsp;</span>';
-                                } else {
-                                    echo '<span>&nbsp;</span>';
-                                }
-                            }
-                            ?>
+                            <?= Stars::widget(['rating' => $response->executor->rating]) ?>
                         </div>
                         <p class="reviews">
                             <?= \Yii::$app->i18n->messageFormatter->format(

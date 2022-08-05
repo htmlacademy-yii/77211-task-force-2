@@ -2,11 +2,9 @@
 
 namespace app\models;
 
-use Taskforce\Logic\Task as TaskLogic;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -32,6 +30,8 @@ use yii\web\IdentityInterface;
  * @property File $avatarFile
  * @property City $city
  * @property Response[] $responses
+ * @property Review[] $reviewsWhereUserIsAuthor
+ * @property Review[] $reviewsWhereUserIsReceiver
  * @property Task[] $tasksWhereUserIsCustomer
  * @property Task[] $tasksWhereUserIsExecutor
  * @property Category[] $categories
@@ -40,6 +40,8 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public const STATUS_READY = 0;
     public const STATUS_BUSY = 1;
+    public const ROLE_CUSTOMER = 0;
+    public const ROLE_EXECUTOR = 1;
 
     /**
      * {@inheritdoc}
@@ -250,7 +252,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return array
      */
-    public function getStatusesList(): array
+    public function getUserStatusesList(): array
     {
         return [
             self::STATUS_READY => 'Открыт для новых заказов',
@@ -265,7 +267,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Task::find()
             ->where(['executor_id' => $this->id])
-            ->andWhere(['status' => TaskLogic::STATUS_DONE])
+            ->andWhere(['status' => Task::STATUS_DONE])
             ->count();
     }
 

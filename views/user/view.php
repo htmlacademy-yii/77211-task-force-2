@@ -8,6 +8,7 @@
 
 use app\models\Review;
 use app\models\User;
+use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -17,19 +18,14 @@ use yii\helpers\Url;
     <h3 class="head-main"><?= Html::encode($user->name) ?></h3>
     <div class="user-card">
         <div class="photo-rate">
-            <img class="card-photo" src="<?= $user->avatarFile->path ?>" width="191" height="190" alt="Фото пользователя">
+            <?php if ($user->avatarFile): ?>
+                <img class="card-photo" src="<?= $user->avatarFile->path ?>" width="191" height="190" alt="Фото пользователя">
+            <?php else: ?>
+                <img class="card-photo" src="https://via.placeholder.com/191x190.png/?text=no+photo" width="191" height="190" alt="Фото пользователя">
+            <?php endif; ?>
             <div class="card-rate">
                 <div class="stars-rating big">
-                    <?php
-                    $rating = round($user->rating);
-                    for ($i = 1; $i <= 5; $i++) {
-                        if ($rating >= $i) {
-                            echo '<span class="fill-star">&nbsp;</span>';
-                        } else {
-                            echo '<span>&nbsp;</span>';
-                        }
-                    }
-                    ?>
+                    <?= Stars::widget(['rating' => $user->rating]) ?>
                 </div>
                 <span class="current-rate"><?= $user->rating ?></span>
             </div>
@@ -78,16 +74,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="feedback-wrapper">
                     <div class="stars-rating small">
-                        <?php
-                        $rating = round($review->rate);
-                        for ($i = 1; $i <= 5; $i++) {
-                            if ($rating >= $i) {
-                                echo '<span class="fill-star">&nbsp;</span>';
-                            } else {
-                                echo '<span>&nbsp;</span>';
-                            }
-                        }
-                        ?>
+                        <?= Stars::widget(['rating' => $review->rate]) ?>
                     </div>
                     <p class="info-text"><span class="current-time"><?= Yii::$app->formatter->asRelativeTime($review->created_at) ?></span></p>
                 </div>
@@ -117,7 +104,7 @@ use yii\helpers\Url;
             <dt>Дата регистрации</dt>
             <dd><?= Yii::$app->formatter->asRelativeTime($user->created_at) ?></dd>
             <dt>Статус</dt>
-            <dd><?= $user->getStatusesList()[$user->status] ?></dd>
+            <dd><?= $user->getUserStatusesList()[$user->status] ?></dd>
         </dl>
     </div>
     <div class="right-card white">

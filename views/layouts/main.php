@@ -20,6 +20,7 @@ AppAsset::register($this);
 </head>
 <body>
 <?php $this->beginBody() ?>
+<?php if (!str_contains(Yii::$app->request->url, 'registration')): ?>
 <header class="page-header">
     <nav class="main-nav">
         <a href='#' class="header-logo">
@@ -65,6 +66,7 @@ AppAsset::register($this);
         </div>
     </div>
 </header>
+<?php endif; ?>
 <main class="main-content container">
     <?= $content ?>
 </main>

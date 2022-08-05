@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "category".
@@ -69,5 +70,14 @@ class Category extends ActiveRecord
     {
         return $this->hasMany(User::class, ['id' => 'user_id'])
             ->viaTable('user_category', ['category_id' => 'id']);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCategoriesList(): array
+    {
+        $categories = Category::find()->asArray()->all();
+        return ArrayHelper::map($categories, 'id', 'name');
     }
 }
