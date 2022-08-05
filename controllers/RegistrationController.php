@@ -26,7 +26,8 @@ class RegistrationController extends Controller
             $user->email = $regForm->email;
             $user->city_id = $regForm->city_id;
             $user->password = Yii::$app->getSecurity()->generatePasswordHash($regForm->password);
-            $user->save(false);
+            $user->role = $regForm->role;
+            $user->save();
 
             return $this->redirect(['tasks/index']);
         }

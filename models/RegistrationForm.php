@@ -8,10 +8,10 @@ class RegistrationForm extends Model
 {
     public string $name = '';
     public string $email = '';
-    public int $city_id = 0;
+    public ?int $city_id = null;
     public string $password = '';
     public string $password_repeat = '';
-    public int $role = 1;
+    public int $role = User::ROLE_EXECUTOR;
 
     /**
      * @return string

@@ -40,6 +40,8 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public const STATUS_READY = 0;
     public const STATUS_BUSY = 1;
+    public const ROLE_CUSTOMER = 0;
+    public const ROLE_EXECUTOR = 1;
 
     /**
      * {@inheritdoc}
