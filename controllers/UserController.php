@@ -4,11 +4,17 @@ namespace app\controllers;
 
 use app\models\Review;
 use app\models\User;
-use yii\web\Controller;
+use Yii;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
-class UserController extends Controller
+class UserController extends SecuredController
 {
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($id): string
     {
         $user = User::findOne($id);
@@ -28,5 +34,15 @@ class UserController extends Controller
             'user' => $user,
             'reviews' => $reviews,
         ]);
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionLogout(): Response
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 }
