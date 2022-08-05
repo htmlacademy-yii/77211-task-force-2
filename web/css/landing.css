@@ -596,7 +596,7 @@ footer {
   padding-left: 26px; }
 
 .input {
-  color: #8F9BB2;
+  color: #3c3f49;
   border: 1px solid #e4e9f2;
   border-radius: 4px;
   background-color: #f7f9fc;
@@ -615,7 +615,7 @@ footer {
   padding-bottom: 14px;
   padding-right: 16px;
   padding-left: 16px;
-  margin-bottom: 35px; }
+  margin-bottom: 15px; }
 
 .multiple-select {
   padding-top: 14px;
@@ -2583,4 +2583,9 @@ footer {
 
 .has-error div {
   color: #FF116E; }
+
+.enter-form .has-error div {
+  margin-bottom: 15px;
+  font-size: 14px;
+}
 /*# sourceMappingURL=style.css.map */
