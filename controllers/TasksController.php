@@ -9,10 +9,9 @@ use app\models\TasksFilterForm;
 use app\services\TasksFilterService;
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller
+class TasksController extends SecuredController
 {
     /**
      * @return string

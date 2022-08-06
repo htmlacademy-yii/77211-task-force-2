@@ -5,6 +5,7 @@
 
 use app\assets\AppAsset;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -23,8 +24,12 @@ AppAsset::register($this);
 <?php if (!str_contains(Yii::$app->request->url, 'registration')): ?>
 <header class="page-header">
     <nav class="main-nav">
-        <a href='#' class="header-logo">
-            <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
+        <a href='<?= Url::to(['tasks/index']) ?>' class="header-logo">
+            <?= Html::img('@web/img/logotype.png', [
+                'alt' => 'taskforce',
+                'width' => 227,
+                'height' => 60
+            ]) ?>
         </a>
         <div class="nav-wrapper">
             <ul class="nav-list">
@@ -44,11 +49,11 @@ AppAsset::register($this);
         </div>
     </nav>
     <div class="user-block">
-        <a href="#">
+        <a href="<?= Url::to(['user/view', 'id' => Yii::$app->user->id]) ?>">
             <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
-            <p class="user-name">Василий</p>
+            <p class="user-name"><?= Yii::$app->user->identity->name ?></p>
             <div class="popup-head">
                 <ul class="popup-menu">
                     <li class="menu-item">
@@ -58,7 +63,7 @@ AppAsset::register($this);
                         <a href="#" class="link">Связаться с нами</a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="link">Выход из системы</a>
+                        <a href="<?= Url::to(['user/logout']) ?>" class="link">Выход из системы</a>
                     </li>
 
                 </ul>

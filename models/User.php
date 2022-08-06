@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -195,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id): User|IdentityInterface|null
     {
-        return static::findOne($id);
+        return self::findOne($id);
     }
 
     /**
@@ -207,9 +208,9 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritDoc
+     * @return int
      */
-    public function getId(): int|string
+    public function getId(): int
     {
         return $this->id;
     }
@@ -231,14 +232,12 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @param string $password
+     * @return bool
      */
     public function validatePassword(string $password): bool
     {
-        return $this->password === $password;
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 
     /**
