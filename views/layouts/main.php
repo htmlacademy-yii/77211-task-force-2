@@ -6,6 +6,7 @@
 use app\assets\AppAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\Menu;
 
 AppAsset::register($this);
 ?>
@@ -32,20 +33,22 @@ AppAsset::register($this);
             ]) ?>
         </a>
         <div class="nav-wrapper">
-            <ul class="nav-list">
-                <li class="list-item list-item--active">
-                    <a class="link link--nav" >Новое</a>
-                </li>
-                <li class="list-item">
-                    <a href="#" class="link link--nav" >Мои задания</a>
-                </li>
-                <li class="list-item">
-                    <a href="#" class="link link--nav" >Создать задание</a>
-                </li>
-                <li class="list-item">
-                    <a href="#" class="link link--nav" >Настройки</a>
-                </li>
-            </ul>
+            <?= Menu::widget([
+                'items' => [
+                    ['label' => 'Новое', 'url' => ['tasks/index']],
+                    ['label' => 'Мои задания', 'url' => '#'],
+                    ['label' => 'Создать задание', 'url' => ['tasks/create']],
+                    ['label' => 'Настройки', 'url' => '#'],
+                ],
+                'activeCssClass' => 'list-item--active',
+                'options' => [
+                    'class' => 'nav-list',
+                ],
+                'itemOptions' => [
+                    'class' => 'list-item',
+                ],
+                'linkTemplate' => '<a class="link link--nav" href="{url}">{label}</a>',
+            ]) ?>
         </div>
     </nav>
     <div class="user-block">
