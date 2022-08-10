@@ -12,7 +12,7 @@ return [
     'name' => $faker->name(),
     'birthdate' => $faker->date('Y-m-d', '2004-01-01'),
     'info' => $faker->text(),
-    'avatar_file_id' => $faker->unique()->numberBetween(1, 100),
+    'avatar_file_id' => $faker->unique()->numberBetween(1, 10),
     'rating' => $faker->randomFloat(2, 0, 5),
     'city_id' => $faker->numberBetween(1, $citiesCount),
     'phone' => $faker->e164PhoneNumber(),
