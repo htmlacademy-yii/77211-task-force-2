@@ -4,6 +4,7 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
@@ -37,7 +38,11 @@ AppAsset::register($this);
                 'items' => [
                     ['label' => 'Новое', 'url' => ['tasks/index']],
                     ['label' => 'Мои задания', 'url' => '#'],
-                    ['label' => 'Создать задание', 'url' => ['tasks/create']],
+                    [
+                        'label' => 'Создать задание',
+                        'url' => ['tasks/create'],
+                        'visible' => Yii::$app->user->identity->role === User::ROLE_CUSTOMER,
+                    ],
                     ['label' => 'Настройки', 'url' => '#'],
                 ],
                 'activeCssClass' => 'list-item--active',
@@ -56,7 +61,7 @@ AppAsset::register($this);
             <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
-            <p class="user-name"><?= Yii::$app->user->identity->name ?></p>
+            <p class="user-name"><?= Html::encode(Yii::$app->user->identity->name) ?></p>
             <div class="popup-head">
                 <ul class="popup-menu">
                     <li class="menu-item">
@@ -75,7 +80,7 @@ AppAsset::register($this);
     </div>
 </header>
 <?php endif; ?>
-<main class="main-content container">
+<main class="main-content container <?= str_contains(Yii::$app->request->url, 'tasks/create') ? 'main-content--center' : '' ?>">
     <?= $content ?>
 </main>
 <?php $this->endBody() ?>

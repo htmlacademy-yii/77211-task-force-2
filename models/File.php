@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -13,10 +14,11 @@ use yii\db\ActiveRecord;
  * @property string $path
  *
  * @property Task[] $tasks
- * @property User[] $users
  */
 class File extends ActiveRecord
 {
+    public const BYTES_IN_KILOBYTES = 1024;
+
     /**
      * {@inheritdoc}
      */
@@ -57,5 +59,16 @@ class File extends ActiveRecord
     {
         return $this->hasMany(Task::class, ['id' => 'task_id'])
             ->viaTable('task_file', ['file_id' => 'id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize(): string
+    {
+        $fullFilePath = Yii::getAlias('@webroot') . $this->path;
+        $size = round(filesize($fullFilePath) / self::BYTES_IN_KILOBYTES, 2);
+
+        return "$size Кб";
     }
 }

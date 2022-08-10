@@ -1,3 +1,6 @@
+web/uploads/tasks/*
+!web/uploads/tasks/.gitkeep
+
 # phpstorm project files
 .idea
 

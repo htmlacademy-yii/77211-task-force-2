@@ -14,7 +14,9 @@ use yii\helpers\Url;
         <a href="<?= Url::to(['tasks/view', 'id' => $model->id]) ?>" class="link link--block link--big">
             <?= Html::encode($model->title) ?>
         </a>
-        <p class="price price--task"><?= Html::encode($model->budget) ?> ₽</p>
+        <?php if(isset($model->budget)): ?>
+            <p class="price price--task"><?= Html::encode($model->budget) ?> ₽</p>
+        <?php endif; ?>
     </div>
     <p class="info-text">
         <span class="current-time"><?= Yii::$app->formatter->asRelativeTime($model->created_at) ?></span>

@@ -5,8 +5,10 @@
  * @var Task $task
  * @var string $taskStatusName
  * @var Response[] $responses
+ * @var File[] $files
  */
 
+use app\models\File;
 use app\models\Response;
 use app\models\Task;
 use app\widgets\Stars;
@@ -18,7 +20,9 @@ use yii\helpers\Url;
 <div class="left-column">
     <div class="head-wrapper">
         <h3 class="head-main"><?= Html::encode($task->title) ?></h3>
-        <p class="price price--big"><?= Html::encode($task->budget) ?> ₽</p>
+        <?php if (isset($task->budget)): ?>
+            <p class="price price--big"><?= Html::encode($task->budget) ?> ₽</p>
+        <?php endif; ?>
     </div>
     <p class="task-description"><?= Html::encode($task->description) ?></p>
     <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
@@ -83,25 +87,28 @@ use yii\helpers\Url;
             <dt>Дата публикации</dt>
             <dd><?= Yii::$app->formatter->asRelativeTime($task->created_at) ?></dd>
             <dt>Срок выполнения</dt>
-            <dd><?= Yii::$app->formatter->asDatetime($task->deadline_at, 'php:j F, H:i') ?></dd>
+            <?php if (isset($task->deadline_at)): ?>
+                <dd><?= Yii::$app->formatter->asDate($task->deadline_at, 'php:j F') ?></dd>
+            <?php else: ?>
+                <dd>Бессрочно</dd>
+            <?php endif; ?>
             <dt>Статус</dt>
             <dd><?= $taskStatusName ?></dd>
         </dl>
     </div>
-    <!-- TODO: Добавить вывод прикрепленных к заданию файлов -->
+    <?php if (!empty($files)): ?>
     <div class="right-card white file-card">
         <h4 class="head-card">Файлы задания</h4>
         <ul class="enumeration-list">
+            <?php foreach ($files as $file): ?>
             <li class="enumeration-item">
-                <a href="#" class="link link--block link--clip">my_picture.jpg</a>
-                <p class="file-size">356 Кб</p>
+                <a href="<?= Url::to($file->path) ?>" class="link link--block link--clip"><?= basename($file->path) ?></a>
+                <p class="file-size"><?= $file->getSize() ?></p>
             </li>
-            <li class="enumeration-item">
-                <a href="#" class="link link--block link--clip">information.docx</a>
-                <p class="file-size">12 Кб</p>
-            </li>
+            <?php endforeach; ?>
         </ul>
     </div>
+    <?php endif; ?>
 </div>
 <section class="pop-up pop-up--refusal pop-up--close">
     <div class="pop-up--wrapper">
