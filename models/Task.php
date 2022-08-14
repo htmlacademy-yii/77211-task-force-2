@@ -14,7 +14,7 @@ use yii\db\ActiveRecord;
  * @property int|null $executor_id
  * @property int $status
  * @property string $title
- * @property string|null $description
+ * @property string $description
  * @property int $category_id
  * @property int|null $budget
  * @property int|null $city_id

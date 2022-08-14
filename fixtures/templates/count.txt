@@ -2,6 +2,5 @@ user - 10
 user_category - 20
 file - 100
 task - 20 (10 - executor_id = null, status = 1)
-task_file - 20
 responses - 5 (3 - task 1, 2 - task 2)
 review - 20

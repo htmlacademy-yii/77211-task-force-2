@@ -61,16 +61,18 @@ use yii\widgets\ListView;
 
             <h4 class="head-card">Категории</h4>
 
-            <?= $form->field($filterForm, 'categories')
+            <?= $form->field($filterForm, 'categories', [
+                'template' => '{label}{input}',
+            ])
                 ->checkboxList($categoriesList, [
-                    'tag' => false,
-                    'item' => function ($index, $label, $name, $checked, $value) {
-                        $checkedStatus = $checked ? 'checked' : '';
-                        $inputHtml = "<input type='checkbox' name='$name' id='$index' value='$value' $checkedStatus>";
-                        $labelHtml = "<label class='control-label' for='$index'>$label</label>";
-
-                        return "<div>{$inputHtml}{$labelHtml}</div>";
-                    },
+                    'tag' => 'div',
+                    'class' => 'checkbox-wrapper',
+                    'id' => false,
+                    'itemOptions' => [
+                        'labelOptions' => [
+                            'class' => 'control-label',
+                        ]
+                    ],
                     'unselect' => null,
                 ])
                 ->label(false) ?>
@@ -79,13 +81,21 @@ use yii\widgets\ListView;
 
             <?= $form->field($filterForm, 'remote', ['template' => '{input}{label}'])
                 ->checkbox([
-                    'uncheck' => null
-                ], false) ?>
+                    'labelOptions' => [
+                        'class' => 'control-label',
+                    ],
+                    'id' => false,
+                    'uncheck' => null,
+                ]) ?>
 
             <?= $form->field($filterForm, 'withoutResponse', ['template' => '{input}{label}'])
                 ->checkbox([
-                    'uncheck' => null
-                ], false) ?>
+                    'labelOptions' => [
+                        'class' => 'control-label',
+                    ],
+                    'id' => false,
+                    'uncheck' => null,
+                ]) ?>
 
             <h4 class="head-card">Период</h4>
 
@@ -102,10 +112,11 @@ use yii\widgets\ListView;
                             'value' => '0',
                         ]
                     ],
+                    'id' => false,
                 ])
                 ->label(false) ?>
 
-            <?= Html::submitButton('Искать', ['class' => 'button button--blue']) ?>
+            <?= Html::submitInput('Искать', ['class' => 'button button--blue']) ?>
 
             <?php ActiveForm::end() ?>
         </div>

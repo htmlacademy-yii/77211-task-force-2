@@ -15,13 +15,13 @@ class m220614_143704_create_task_table extends Migration
             'executor_id' => $this->integer(),
             'status' => $this->tinyInteger()->defaultValue(1)->notNull(),
             'title' => $this->string()->notNull(),
-            'description' => $this->text(),
+            'description' => $this->text()->notNull(),
             'category_id' => $this->integer()->notNull(),
             'budget' => $this->integer(),
             'city_id' => $this->integer(),
             'coordinates' => 'POINT',
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
-            'deadline_at' => $this->dateTime()
+            'deadline_at' => $this->date(),
         ]);
 
         $this->addForeignKey(

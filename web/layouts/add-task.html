@@ -18,13 +18,13 @@
                     <a class="link link--nav" >Новое</a>
                 </li>
                 <li class="list-item">
-                    <a href="#" class="link link--nav" >Мои задания</a>
+                    <a href="#" class="link link--nav">Мои задания</a>
                 </li>
                 <li class="list-item">
-                    <a href="#" class="link link--nav" >Создать задание</a>
+                    <a href="#" class="link link--nav">Создать задание</a>
                 </li>
                 <li class="list-item">
-                    <a href="#" class="link link--nav" >Настройки</a>
+                    <a href="#" class="link link--nav">Настройки</a>
                 </li>
             </ul>
         </div>
@@ -58,10 +58,12 @@
             <div class="form-group">
                 <label class="control-label" for="essence-work">Опишите суть работы</label>
                 <input id="essence-work" type="text">
+                <span class="help-block">Error description is here</span>
             </div>
             <div class="form-group">
                 <label class="control-label" for="username">Подробности задания</label>
                 <textarea id="username"></textarea>
+                <span class="help-block">Error description is here</span>
             </div>
             <div class="form-group">
                 <label class="control-label" for="town-user">Категория</label>
@@ -70,26 +72,30 @@
                     <option>Грузоперевозки</option>
                     <option>Клининг</option>
                 </select>
+                <span class="help-block">Error description is here</span>
             </div>
             <div class="form-group">
                 <label class="control-label" for="location">Локация</label>
-                <input id="location" type="text">
+                <input class="location-icon" id="location" type="text">
+                <span class="help-block">Error description is here</span>
             </div>
             <div class="half-wrapper">
                 <div class="form-group">
                     <label class="control-label" for="budget">Бюджет</label>
-                    <input id="budget" type="number">
+                    <input class="budget-icon" id="budget" type="text">
+                    <span class="help-block">Error description is here</span>
                 </div>
                 <div class="form-group">
                     <label class="control-label" for="period-execution">Срок исполнения</label>
                     <input id="period-execution" type="date">
+                    <span class="help-block">Error description is here</span>
                 </div>
             </div>
             <p class="form-label">Файлы</p>
             <div class="new-file">
-                <p class="add-file">Добавить новый файл</p>
+               Добавить новый файл
             </div>
-            <input type="button" class="button button--blue" value="Опубликовать">
+            <input type="submit" class="button button--blue" value="Опубликовать">
         </form>
     </div>
 </main>

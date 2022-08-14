@@ -12,7 +12,7 @@ return [
         'city_id' => 376,
         'coordinates' => null,
         'created_at' => '2022-07-23 19:56:02',
-        'deadline_at' => '2022-07-30 02:59:27',
+        'deadline_at' => '2022-07-30',
     ],
     'task1' => [
         'customer_id' => 1,
@@ -25,7 +25,7 @@ return [
         'city_id' => 424,
         'coordinates' => null,
         'created_at' => '2022-07-24 06:52:22',
-        'deadline_at' => '2022-07-30 17:09:47',
+        'deadline_at' => '2022-07-30',
     ],
     'task2' => [
         'customer_id' => 4,
@@ -38,7 +38,7 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-23 04:21:39',
-        'deadline_at' => '2022-07-26 21:02:05',
+        'deadline_at' => '2022-07-26',
     ],
     'task3' => [
         'customer_id' => 10,
@@ -51,7 +51,7 @@ return [
         'city_id' => 810,
         'coordinates' => null,
         'created_at' => '2022-07-23 07:24:55',
-        'deadline_at' => '2022-07-30 16:42:05',
+        'deadline_at' => '2022-07-30',
     ],
     'task4' => [
         'customer_id' => 8,
@@ -64,7 +64,7 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-23 18:15:40',
-        'deadline_at' => '2022-07-28 11:27:12',
+        'deadline_at' => '2022-07-28',
     ],
     'task5' => [
         'customer_id' => 4,
@@ -77,7 +77,7 @@ return [
         'city_id' => 793,
         'coordinates' => null,
         'created_at' => '2022-07-23 08:23:24',
-        'deadline_at' => '2022-07-25 23:23:36',
+        'deadline_at' => '2022-07-25',
     ],
     'task6' => [
         'customer_id' => 6,
@@ -90,7 +90,7 @@ return [
         'city_id' => 76,
         'coordinates' => null,
         'created_at' => '2022-07-22 23:29:46',
-        'deadline_at' => '2022-07-24 14:31:26',
+        'deadline_at' => '2022-07-24',
     ],
     'task7' => [
         'customer_id' => 9,
@@ -103,7 +103,7 @@ return [
         'city_id' => 493,
         'coordinates' => null,
         'created_at' => '2022-07-23 04:49:58',
-        'deadline_at' => '2022-07-25 02:05:51',
+        'deadline_at' => '2022-07-25',
     ],
     'task8' => [
         'customer_id' => 10,
@@ -116,7 +116,7 @@ return [
         'city_id' => 119,
         'coordinates' => null,
         'created_at' => '2022-07-23 20:27:38',
-        'deadline_at' => '2022-07-27 10:07:43',
+        'deadline_at' => '2022-07-27',
     ],
     'task9' => [
         'customer_id' => 4,
@@ -125,11 +125,11 @@ return [
         'title' => 'Aut enim soluta cupiditate tempora libero.',
         'description' => 'Eos voluptatibus dolorem aliquid dolores iusto. Nihil quis sunt mollitia dolor. Quia accusamus excepturi omnis doloribus nisi aliquam aut. Rem veniam adipisci blanditiis explicabo est accusamus quos.',
         'category_id' => 3,
-        'budget' => 9537,
+        'budget' => null,
         'city_id' => 1001,
         'coordinates' => null,
         'created_at' => '2022-07-24 05:04:33',
-        'deadline_at' => '2022-07-29 09:25:28',
+        'deadline_at' => '2022-07-29',
     ],
     'task10' => [
         'customer_id' => 4,
@@ -142,7 +142,7 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-24 02:43:00',
-        'deadline_at' => '2022-07-24 13:12:30',
+        'deadline_at' => '2022-07-24',
     ],
     'task11' => [
         'customer_id' => 4,
@@ -155,7 +155,7 @@ return [
         'city_id' => 774,
         'coordinates' => null,
         'created_at' => '2022-07-23 05:01:03',
-        'deadline_at' => '2022-07-27 05:48:12',
+        'deadline_at' => '2022-07-27',
     ],
     'task12' => [
         'customer_id' => 4,
@@ -168,7 +168,7 @@ return [
         'city_id' => 482,
         'coordinates' => null,
         'created_at' => '2022-07-23 23:36:47',
-        'deadline_at' => '2022-07-26 19:25:20',
+        'deadline_at' => '2022-07-26',
     ],
     'task13' => [
         'customer_id' => 2,
@@ -181,7 +181,7 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-23 20:19:44',
-        'deadline_at' => '2022-07-25 03:58:04',
+        'deadline_at' => '2022-07-25',
     ],
     'task14' => [
         'customer_id' => 3,
@@ -190,11 +190,11 @@ return [
         'title' => 'Et fugiat architecto ut culpa dolorem.',
         'description' => 'Facere placeat error rem possimus. Est molestiae exercitationem aut adipisci quisquam odit voluptas non. Eos quas sed sit nulla illo tempora eaque itaque.',
         'category_id' => 5,
-        'budget' => 6581,
+        'budget' => null,
         'city_id' => 658,
         'coordinates' => null,
         'created_at' => '2022-07-23 03:22:36',
-        'deadline_at' => '2022-07-25 03:24:41',
+        'deadline_at' => '2022-07-25',
     ],
     'task15' => [
         'customer_id' => 5,
@@ -207,7 +207,7 @@ return [
         'city_id' => 418,
         'coordinates' => null,
         'created_at' => '2022-07-23 05:07:34',
-        'deadline_at' => '2022-07-29 12:33:07',
+        'deadline_at' => '2022-07-29',
     ],
     'task16' => [
         'customer_id' => 9,
@@ -220,7 +220,7 @@ return [
         'city_id' => 496,
         'coordinates' => null,
         'created_at' => '2022-07-23 01:34:09',
-        'deadline_at' => '2022-07-26 05:30:22',
+        'deadline_at' => '2022-07-26',
     ],
     'task17' => [
         'customer_id' => 3,
@@ -233,7 +233,7 @@ return [
         'city_id' => 1026,
         'coordinates' => null,
         'created_at' => '2022-07-23 19:31:03',
-        'deadline_at' => '2022-07-28 13:07:46',
+        'deadline_at' => '2022-07-28',
     ],
     'task18' => [
         'customer_id' => 2,
@@ -246,7 +246,7 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-24 03:11:21',
-        'deadline_at' => '2022-07-25 21:14:31',
+        'deadline_at' => '2022-07-25',
     ],
     'task19' => [
         'customer_id' => 7,
@@ -259,6 +259,6 @@ return [
         'city_id' => null,
         'coordinates' => null,
         'created_at' => '2022-07-23 14:48:13',
-        'deadline_at' => '2022-07-24 12:48:31',
+        'deadline_at' => '2022-07-24',
     ],
 ];

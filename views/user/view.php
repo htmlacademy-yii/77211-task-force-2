@@ -19,9 +19,19 @@ use yii\helpers\Url;
     <div class="user-card">
         <div class="photo-rate">
             <?php if ($user->avatarFile): ?>
-                <img class="card-photo" src="<?= $user->avatarFile->path ?>" width="191" height="190" alt="Фото пользователя">
+                <?= Html::img($user->avatarFile->path, [
+                    'class' => 'card-photo',
+                    'alt' => 'Фото пользователя',
+                    'width' => 191,
+                    'height' => 190,
+                ]) ?>
             <?php else: ?>
-                <img class="card-photo" src="https://via.placeholder.com/191x190.png/?text=no+photo" width="191" height="190" alt="Фото пользователя">
+                <?= Html::img('https://via.placeholder.com/191x190.png/?text=no+photo', [
+                    'class' => 'card-photo',
+                    'alt' => 'Фото пользователя отсутсвует',
+                    'width' => 191,
+                    'height' => 190,
+                ]) ?>
             <?php endif; ?>
             <div class="card-rate">
                 <div class="stars-rating big">
@@ -41,7 +51,9 @@ use yii\helpers\Url;
                 <ul class="special-list">
                     <?php foreach ($categories as $category): ?>
                         <li class="special-item">
-                            <a href="<?= Url::to(['tasks/index', 'categories[]' => $category->id]) ?>" class="link link--regular"><?= $category->name ?></a>
+                            <a href="<?= Url::to(['tasks/index', 'categories[]' => $category->id]) ?>" class="link link--regular">
+                                <?= $category->name ?>
+                            </a>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -67,10 +79,19 @@ use yii\helpers\Url;
         <h4 class="head-regular">Отзывы заказчиков</h4>
         <?php foreach ($reviews as $review): ?>
             <div class="response-card">
-                <img class="customer-photo" src="<?= $review->author->avatarFile->path ?>" width="120" height="127" alt="Фото заказчиков">
+                <?= Html::img($review->author->avatarFile->path, [
+                    'class' => 'customer-photo',
+                    'alt' => 'Фото заказчика',
+                    'width' => 120,
+                    'height' => 127,
+                ]) ?>
                 <div class="feedback-wrapper">
                     <p class="feedback"><?= Html::encode($review->comment) ?></p>
-                    <p class="task">Задание «<a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>" class="link link--small"><?= Html::encode($review->task->title) ?></a>» выполнено</p>
+                    <p class="task">Задание «<a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>"
+                                                class="link link--small">
+                            <?= Html::encode($review->task->title) ?>
+                        </a>» выполнено
+                    </p>
                 </div>
                 <div class="feedback-wrapper">
                     <div class="stars-rating small">
