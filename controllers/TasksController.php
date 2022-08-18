@@ -4,9 +4,10 @@ namespace app\controllers;
 
 use app\models\Category;
 use app\models\CreateTaskForm;
-use app\models\Response;
 use app\models\User;
 use app\services\CreateTaskService;
+use app\services\ResponseService;
+use app\services\TaskService;
 use app\services\UploadFileService;
 use yii\base\Exception;
 use yii\web\Response as WebResponse;
@@ -77,6 +78,7 @@ class TasksController extends SecuredController
      * @param int $id
      * @return string
      * @throws NotFoundHttpException
+     * @throws Exception
      */
     public function actionView(int $id): string
     {
@@ -90,11 +92,8 @@ class TasksController extends SecuredController
         $this->view->title = "$task->title :: Taskforce";
 
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
-
-        $responses = Response::find()
-            ->where(['task_id' => $id])
-            ->with('executor.avatarFile', 'executor.reviewsWhereUserIsReceiver')
-            ->all();
+        $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
+        $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
 
         $files = $task->files;
 
@@ -102,6 +101,7 @@ class TasksController extends SecuredController
             'task' => $task,
             'taskStatusName' => $taskStatusName,
             'responses' => $responses,
+            'actionsMarkup' => $actionsMarkup,
             'files' => $files
         ]);
     }

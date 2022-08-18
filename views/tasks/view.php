@@ -25,25 +25,36 @@ use yii\helpers\Url;
         <?php endif; ?>
     </div>
     <p class="task-description"><?= Html::encode($task->description) ?></p>
-    <a href="#" class="button button--blue action-btn" data-action="act_response">Откликнуться на задание</a>
-    <a href="#" class="button button--orange action-btn" data-action="refusal">Отказаться от задания</a>
-    <a href="#" class="button button--pink action-btn" data-action="completion">Завершить задание</a>
+    <?php if (!empty($actionsMarkup)): ?>
+        <?php foreach ($actionsMarkup as $markup): ?>
+            <?= $markup ?>
+        <?php endforeach; ?>
+    <?php endif; ?>
     <div class="task-map">
         <!-- TODO: Добавить вывод карты, города, адреса -->
         <img class="map" src="/img/map.png" width="724" height="348" alt="Новый арбат, 23, к. 1">
         <p class="map-address town">Москва</p>
         <p class="map-address">Новый арбат, 23, к. 1</p>
     </div>
-    <h4 class="head-regular">Отклики на задание</h4>
     <?php if (!empty($responses)): ?>
+        <h4 class="head-regular">Отклики на задание</h4>
         <?php foreach ($responses as $response): ?>
             <div class="response-card">
-                <?= Html::img($response->executor->avatarFile->path, [
-                    'class' => 'customer-photo',
-                    'alt' => 'Фото заказчика',
-                    'width' => 146,
-                    'height' => 156,
-                ]) ?>
+                <?php if (isset($response->executor->avatarFile)): ?>
+                    <?= Html::img($response->executor->avatarFile->path, [
+                        'class' => 'customer-photo',
+                        'alt' => 'Фото заказчика',
+                        'width' => 146,
+                        'height' => 156,
+                    ]) ?>
+                <?php else: ?>
+                    <?= Html::img('@web/img/avatars/1.png', [
+                        'class' => 'customer-photo',
+                        'alt' => 'Нет фото',
+                        'width' => 146,
+                        'height' => 156,
+                    ]) ?>
+                <?php endif; ?>
                 <div class="feedback-wrapper">
                     <a href="<?= Url::to(['user/view', 'id' => $response->executor_id]) ?>" class="link link--block link--big">
                         <?= Html::encode($response->executor->name) ?>
@@ -67,13 +78,13 @@ use yii\helpers\Url;
                     <p class="price price--small"><?= Html::encode($response->budget) ?> ₽</p>
                 </div>
                 <div class="button-popup">
-                    <a href="#" class="button button--blue button--small">Принять</a>
-                    <a href="#" class="button button--orange button--small">Отказать</a>
+                    <?php if (Yii::$app->user->id === $task->customer_id && !$response->is_refused && $task->status === Task::STATUS_NEW): ?>
+                        <a href="<?= Url::to(['responses/accept', 'id' => $response->id]) ?>" class="button button--blue button--small">Принять</a>
+                        <a href="<?= Url::to(['responses/refuse', 'id' => $response->id]) ?>" class="button button--orange button--small">Отказать</a>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
-    <?php else: ?>
-        <p>У задания нет откликов.</p>
     <?php endif; ?>
 </div>
 <div class="right-column">
