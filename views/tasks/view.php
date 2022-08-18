@@ -79,8 +79,8 @@ use yii\helpers\Url;
                 </div>
                 <div class="button-popup">
                     <?php if (Yii::$app->user->id === $task->customer_id && !$response->is_refused && $task->status === Task::STATUS_NEW): ?>
-                        <a href="<?= Url::to(['responses/accept', 'id' => $response->id]) ?>" class="button button--blue button--small">Принять</a>
-                        <a href="<?= Url::to(['responses/refuse', 'id' => $response->id]) ?>" class="button button--orange button--small">Отказать</a>
+                        <a href="<?= Url::to(['response/accept', 'id' => $response->id]) ?>" class="button button--blue button--small">Принять</a>
+                        <a href="<?= Url::to(['response/refuse', 'id' => $response->id]) ?>" class="button button--orange button--small">Отказать</a>
                     <?php endif; ?>
                 </div>
             </div>
