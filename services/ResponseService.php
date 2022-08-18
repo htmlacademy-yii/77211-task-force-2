@@ -25,4 +25,14 @@ class ResponseService
 
         return $query->all();
     }
+
+    /**
+     * @param int $userId
+     * @param int $taskId
+     * @return bool
+     */
+    public function checkIsUserMadeResponseForTask(int $userId, int $taskId): bool
+    {
+        return Response::find()->where(['executor_id' => $userId, 'task_id' => $taskId])->exists();
+    }
 }

@@ -6,14 +6,17 @@
  * @var string $taskStatusName
  * @var Response[] $responses
  * @var File[] $files
+ * @var CreateResponseForm $responseForm
  */
 
+use app\models\CreateResponseForm;
 use app\models\File;
 use app\models\Response;
 use app\models\Task;
 use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 ?>
 
@@ -166,17 +169,17 @@ use yii\helpers\Url;
             Пожалуйста, укажите стоимость работы и добавьте комментарий, если необходимо.
         </p>
         <div class="addition-form pop-up--form regular-form">
-            <form>
-                <div class="form-group">
-                    <label class="control-label" for="addition-comment">Ваш комментарий</label>
-                    <textarea id="addition-comment"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="addition-price">Стоимость</label>
-                    <input id="addition-price" type="text">
-                </div>
-                <input type="submit" class="button button--pop-up button--blue" value="Завершить">
-            </form>
+            <?php $form = ActiveForm::begin([
+                'action' => ['response/create'],
+            ]) ?>
+                <?= $form->field($responseForm, 'task_id', [
+                    'template' => '{input}',
+                ])->hiddenInput(['value' => $task->id]) ?>
+                <?= $form->field($responseForm, 'comment')->textarea() ?>
+                <?= $form->field($responseForm, 'budget') ?>
+
+                <?= Html::submitInput('Завершить', ['class' => 'button button--pop-up button--blue']) ?>
+            <?php ActiveForm::end() ?>
         </div>
         <div class="button-container">
             <button class="button--close" type="button">Закрыть окно</button>

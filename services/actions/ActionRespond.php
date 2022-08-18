@@ -4,6 +4,7 @@ namespace app\services\actions;
 
 use app\models\Task;
 use app\models\User;
+use app\services\ResponseService;
 
 class ActionRespond extends AbstractAction
 {
@@ -12,7 +13,7 @@ class ActionRespond extends AbstractAction
      */
     public static function isCurrentUserCanAct(User $user, Task $task): bool
     {
-        $isUserMadeResponse = $task->getResponses()->where(['executor_id' => $user->id])->exists();
+        $isUserMadeResponse = (new ResponseService())->checkIsUserMadeResponseForTask($user->id, $task->id);
         return !$isUserMadeResponse && $user->role === User::ROLE_EXECUTOR;
     }
 }

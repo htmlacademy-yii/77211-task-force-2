@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Category;
+use app\models\CreateResponseForm;
 use app\models\CreateTaskForm;
 use app\models\User;
 use app\services\CreateTaskService;
@@ -94,15 +95,17 @@ class TasksController extends SecuredController
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
         $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
         $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
-
         $files = $task->files;
+
+        $responseForm = new CreateResponseForm();
 
         return $this->render('view', [
             'task' => $task,
             'taskStatusName' => $taskStatusName,
             'responses' => $responses,
             'actionsMarkup' => $actionsMarkup,
-            'files' => $files
+            'files' => $files,
+            'responseForm' => $responseForm,
         ]);
     }
 
