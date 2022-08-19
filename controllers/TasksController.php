@@ -179,4 +179,27 @@ class TasksController extends SecuredController
 
         return $this->redirect(['tasks/view', 'id' => $id]);
     }
+
+    /**
+     * @param int $id
+     * @return WebResponse
+     * @throws NotFoundHttpException
+     * @throws StaleObjectException
+     */
+    public function actionCancel(int $id): WebResponse
+    {
+        $task = Task::findOne($id);
+        $user = Yii::$app->user->identity;
+
+        if (!$task) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($user->id === $task->customer_id && $task->status === Task::STATUS_NEW) {
+            $task->status = Task::STATUS_CANCELED;
+            $task->update();
+        }
+
+        return $this->redirect(['tasks/view', 'id' => $id]);
+    }
 }
