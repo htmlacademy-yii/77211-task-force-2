@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $task_id
  * @property int $author_id
+ * @property int $user_id
  * @property int $rate
  * @property string|null $comment
  * @property string $created_at
@@ -33,8 +34,8 @@ class Review extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['task_id', 'author_id', 'rate'], 'required'],
-            [['task_id', 'author_id', 'rate'], 'integer'],
+            [['task_id', 'author_id', 'user_id', 'rate'], 'required'],
+            [['task_id', 'author_id', 'user_id', 'rate'], 'integer'],
             [['comment'], 'string'],
             [['created_at'], 'safe'],
             [
@@ -51,6 +52,13 @@ class Review extends ActiveRecord
                 'targetClass' => User::class,
                 'targetAttribute' => ['author_id' => 'id']
             ],
+            [
+                ['user_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']
+            ],
         ];
     }
 
@@ -63,6 +71,7 @@ class Review extends ActiveRecord
             'id' => 'ID',
             'task_id' => 'Task ID',
             'author_id' => 'Author ID',
+            'user_id' => 'User ID',
             'rate' => 'Rate',
             'comment' => 'Comment',
             'created_at' => 'Created At',

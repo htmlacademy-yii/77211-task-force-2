@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Category;
 use app\models\CreateResponseForm;
+use app\models\CreateReviewForm;
 use app\models\CreateTaskForm;
 use app\models\User;
 use app\services\CreateTaskService;
@@ -98,6 +99,7 @@ class TasksController extends SecuredController
         $files = $task->files;
 
         $responseForm = new CreateResponseForm();
+        $reviewForm = new CreateReviewForm();
 
         return $this->render('view', [
             'task' => $task,
@@ -106,6 +108,7 @@ class TasksController extends SecuredController
             'actionsMarkup' => $actionsMarkup,
             'files' => $files,
             'responseForm' => $responseForm,
+            'reviewForm' => $reviewForm,
         ]);
     }
 

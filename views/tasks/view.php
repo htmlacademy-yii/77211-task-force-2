@@ -7,9 +7,11 @@
  * @var Response[] $responses
  * @var File[] $files
  * @var CreateResponseForm $responseForm
+ * @var CreateReviewForm $reviewForm
  */
 
 use app\models\CreateResponseForm;
+use app\models\CreateReviewForm;
 use app\models\File;
 use app\models\Response;
 use app\models\Task;
@@ -146,15 +148,53 @@ use yii\widgets\ActiveForm;
             Пожалуйста, оставьте отзыв об исполнителе и отметьте отдельно, если возникли проблемы.
         </p>
         <div class="completion-form pop-up--form regular-form">
-            <form>
-                <div class="form-group">
-                    <label class="control-label" for="completion-comment">Ваш комментарий</label>
-                    <textarea id="completion-comment"></textarea>
-                </div>
-                <p class="completion-head control-label">Оценка работы</p>
-                <div class="stars-rating big active-stars"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>
-                <input type="submit" class="button button--pop-up button--blue" value="Завершить">
-            </form>
+            <?php $form = ActiveForm::begin([
+                'action' => ['review/create'],
+            ]) ?>
+
+            <?= $form->field($reviewForm, 'task_id', [
+                'template' => '{input}',
+                'options' => [
+                    'tag' => false
+                ],
+            ])->hiddenInput(['value' => $task->id]) ?>
+
+            <?= $form->field($reviewForm, 'author_id', [
+                'template' => '{input}',
+                'options' => [
+                    'tag' => false
+                ],
+            ])->hiddenInput(['value' => $task->customer_id]) ?>
+
+            <?= $form->field($reviewForm, 'user_id', [
+                'template' => '{input}',
+                'options' => [
+                    'tag' => false
+                ],
+            ])->hiddenInput(['value' => $task->executor_id]) ?>
+
+            <?= $form->field($reviewForm, 'comment')->textarea() ?>
+
+            <p class="completion-head control-label">Оценка работы</p>
+            <div class="stars-rating big active-stars"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>
+            <?= $form->field($reviewForm, 'rate',[
+                'template' => '{input}',
+                'options' => [
+                    'tag' => false
+                ],
+            ])->hiddenInput(['value' => '']) ?>
+
+            <?= Html::submitInput('Завершить', ['class' => 'button button--pop-up button--blue']) ?>
+            <?php ActiveForm::end() ?>
+            <!--            <form>-->
+            <!--                <div class="form-group">-->
+            <!--                    <label class="control-label" for="completion-comment">Ваш комментарий</label>-->
+            <!--                    <textarea id="completion-comment"></textarea>-->
+            <!--                </div>-->
+            <!--                <p class="completion-head control-label">Оценка работы</p>-->
+            <!--                <div class="stars-rating big active-stars"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>-->
+            <!--                <input type="submit" class="button button--pop-up button--blue" value="Завершить">-->
+            <!--            </form>-->
         </div>
         <div class="button-container">
             <button class="button--close" type="button">Закрыть окно</button>
@@ -174,7 +214,11 @@ use yii\widgets\ActiveForm;
             ]) ?>
                 <?= $form->field($responseForm, 'task_id', [
                     'template' => '{input}',
+                    'options' => [
+                        'tag' => false
+                    ],
                 ])->hiddenInput(['value' => $task->id]) ?>
+
                 <?= $form->field($responseForm, 'comment')->textarea() ?>
                 <?= $form->field($responseForm, 'budget') ?>
 

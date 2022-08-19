@@ -2,7 +2,9 @@
 
 namespace app\models;
 
-class CreateResponseForm extends \yii\base\Model
+use yii\base\Model;
+
+class CreateResponseForm extends Model
 {
     public ?int $task_id = null;
     public string $comment = '';

@@ -26,11 +26,11 @@ use yii\helpers\Url;
                     'height' => 190,
                 ]) ?>
             <?php else: ?>
-                <?= Html::img('https://via.placeholder.com/191x190.png/?text=no+photo', [
-                    'class' => 'card-photo',
-                    'alt' => 'Фото пользователя отсутсвует',
-                    'width' => 191,
-                    'height' => 190,
+                <?= Html::img('@web/img/avatars/1.png', [
+                    'class' => 'customer-photo',
+                    'alt' => 'Нет фото',
+                    'width' => 146,
+                    'height' => 156,
                 ]) ?>
             <?php endif; ?>
             <div class="card-rate">
@@ -79,12 +79,21 @@ use yii\helpers\Url;
         <h4 class="head-regular">Отзывы заказчиков</h4>
         <?php foreach ($reviews as $review): ?>
             <div class="response-card">
-                <?= Html::img($review->author->avatarFile->path, [
-                    'class' => 'customer-photo',
-                    'alt' => 'Фото заказчика',
-                    'width' => 120,
-                    'height' => 127,
-                ]) ?>
+                <?php if (isset($review->author->avatarFile)): ?>
+                    <?= Html::img($review->author->avatarFile->path, [
+                        'class' => 'customer-photo',
+                        'alt' => 'Фото заказчика',
+                        'width' => 120,
+                        'height' => 127,
+                    ]) ?>
+                <?php else: ?>
+                    <?= Html::img('@web/img/avatars/1.png', [
+                        'class' => 'customer-photo',
+                        'alt' => 'Нет фото',
+                        'width' => 120,
+                        'height' => 127 ,
+                    ]) ?>
+                <?php endif; ?>
                 <div class="feedback-wrapper">
                     <p class="feedback"><?= Html::encode($review->comment) ?></p>
                     <p class="task">Задание «<a href="<?= Url::to(['tasks/view', 'id' => $review->task_id]) ?>"

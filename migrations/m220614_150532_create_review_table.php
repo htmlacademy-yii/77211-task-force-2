@@ -15,7 +15,7 @@ class m220614_150532_create_review_table extends Migration
             'author_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
             'rate' => $this->tinyInteger(5)->notNull(),
-            'comment' => $this->text(),
+            'comment' => $this->text()->notNull(),
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
         ]);
 
