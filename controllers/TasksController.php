@@ -11,7 +11,9 @@ use app\services\CreateTaskService;
 use app\services\ResponseService;
 use app\services\TaskService;
 use app\services\UploadFileService;
+use app\services\UserService;
 use yii\base\Exception;
+use yii\db\StaleObjectException;
 use yii\web\Response as WebResponse;
 use app\models\Task;
 use app\models\TasksFilterForm;
@@ -151,5 +153,30 @@ class TasksController extends SecuredController
             'createTaskForm' => $createTaskForm,
             'categoriesList' => $categoriesList,
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return WebResponse
+     * @throws NotFoundHttpException
+     * @throws StaleObjectException
+     */
+    public function actionRefuse(int $id): WebResponse
+    {
+        $task = Task::findOne($id);
+
+        if (!$task) {
+            throw new NotFoundHttpException();
+        }
+
+        $task->status = Task::STATUS_FAILED;
+        $task->update();
+
+        $executor = $task->executor;
+        $executor->updateCounters(['failed_tasks_count' => 1]);
+        $executor->rating = (new UserService())->countUserRating($executor);
+        $executor->update();
+
+        return $this->redirect(['tasks/view', 'id' => $id]);
     }
 }
