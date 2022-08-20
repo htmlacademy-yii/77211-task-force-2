@@ -12,6 +12,6 @@ class ActionCancel extends AbstractAction
      */
     public static function isCurrentUserCanAct(User $user, Task $task): bool
     {
-        return $user->id === $task->customer_id;
+        return $user->id === $task->customer_id && $task->status === Task::STATUS_NEW;
     }
 }

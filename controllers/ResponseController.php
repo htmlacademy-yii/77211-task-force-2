@@ -9,11 +9,50 @@ use app\models\User;
 use app\services\ResponseService;
 use Yii;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\web\Response as WebResponse;
 
 class ResponseController extends SecuredController
 {
+    /**
+     * @return array[]
+     */
+    public function behaviors(): array
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['executorCanCreateResponse'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->post('CreateResponseForm')['task_id'])
+                        ],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['accept'],
+                        'roles' => ['customerCanAcceptResponse'],
+                        'roleParams' => fn($rule) => [
+                            'task' => (Response::findOne(Yii::$app->request->get('id'))->task)
+                        ]
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['refuse'],
+                        'roles' => ['customerCanRefuseResponse'],
+                        'roleParams' => fn($rule) => [
+                            'task' => (Response::findOne(Yii::$app->request->get('id'))->task)
+                        ]
+                    ],
+                ],
+            ],
+        ];
+    }
+
     /**
      * @return WebResponse|bool
      */
@@ -46,6 +85,7 @@ class ResponseController extends SecuredController
      * @param int $id
      * @return WebResponse
      * @throws NotFoundHttpException
+     * @throws StaleObjectException
      */
     public function actionAccept(int $id): WebResponse
     {
@@ -56,11 +96,15 @@ class ResponseController extends SecuredController
         }
 
         $task = $response->task;
+        $executor = $response->executor;
 
         if (Yii::$app->user->id === $task->customer_id && $task->status === Task::STATUS_NEW) {
             $task->status = Task::STATUS_PROCESSING;
             $task->executor_id = $response->executor_id;
             $task->save();
+
+            $executor->status = User::STATUS_BUSY;
+            $executor->update();
         }
 
         return $this->redirect(['tasks/view', 'id' => $task->id]);

@@ -67,7 +67,6 @@ if (starRating) {
             }
         }
 
-        console.log(rating);
         let inputField = document.getElementById('createreviewform-rate');
         inputField.value = rating;
     });

@@ -9,10 +9,30 @@ use app\models\User;
 use app\services\UserService;
 use Yii;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
 use yii\web\Response as WebResponse;
 
 class ReviewController extends SecuredController
 {
+    public function behaviors(): array
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['customerCanCreateReview'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->post('CreateReviewForm')['task_id'])
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     /**
      * @return WebResponse|bool
      * @throws StaleObjectException
@@ -42,6 +62,7 @@ class ReviewController extends SecuredController
 
                     $executor = User::findOne($review->user_id);
                     $executor->rating = (new UserService())->countUserRating($executor);
+                    $executor->status = User::STATUS_READY;
                     $executor->update();
                 }
 

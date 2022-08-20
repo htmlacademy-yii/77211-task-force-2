@@ -14,6 +14,8 @@ use app\services\UploadFileService;
 use app\services\UserService;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\Controller;
 use yii\web\Response as WebResponse;
 use app\models\Task;
 use app\models\TasksFilterForm;
@@ -24,25 +26,43 @@ use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 
-class TasksController extends SecuredController
+class TasksController extends Controller
 {
-    /**
-     * @return array|array[]
-     */
     public function behaviors(): array
     {
-        $rules = parent::behaviors();
-        $rule = [
-            'allow' => false,
-            'actions' => ['create'],
-            'matchCallback' => function ($rule, $action) {
-                return Yii::$app->user->identity->role === User::ROLE_EXECUTOR;
-            }
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['customer'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['refuse'],
+                        'roles' => ['executorCanRefuseTask'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->get('id'))
+                        ]
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['cancel'],
+                        'roles' => ['customerCanCancelTask'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->get('id'))
+                        ]
+                    ],
+                ],
+            ],
         ];
-
-        array_unshift($rules['access']['rules'], $rule);
-
-        return $rules;
     }
 
     /**
@@ -175,6 +195,7 @@ class TasksController extends SecuredController
         $executor = $task->executor;
         $executor->updateCounters(['failed_tasks_count' => 1]);
         $executor->rating = (new UserService())->countUserRating($executor);
+        $executor->status = User::STATUS_READY;
         $executor->update();
 
         return $this->redirect(['tasks/view', 'id' => $id]);

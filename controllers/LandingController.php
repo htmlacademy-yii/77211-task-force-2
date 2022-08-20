@@ -4,39 +4,12 @@ namespace app\controllers;
 
 use app\models\LoginForm;
 use Yii;
-use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
-class LandingController extends Controller
+class LandingController extends SecuredController
 {
     public $layout = 'landing';
-
-    /**
-     * @return array[]
-     */
-    public function behaviors(): array
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'allow' => false,
-                        'roles' => ['@'],
-                        'denyCallback' => function ($rule, $action) {
-                            $this->redirect(['tasks/index']);
-                        }
-                    ]
-                ]
-            ]
-        ];
-    }
 
     /**
      * @return string|array|Response

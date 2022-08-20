@@ -7,37 +7,10 @@ use app\models\RegistrationForm;
 use app\models\User;
 use Yii;
 use yii\base\Exception;
-use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\Response;
 
-class RegistrationController extends Controller
+class RegistrationController extends SecuredController
 {
-    /**
-     * @return array[]
-     */
-    public function behaviors(): array
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'allow' => false,
-                        'roles' => ['@'],
-                        'denyCallback' => function ($rule, $action) {
-                            $this->redirect(['tasks/index']);
-                        }
-                    ]
-                ]
-            ]
-        ];
-    }
-
     /**
      * @return string|Response
      * @throws Exception
@@ -60,6 +33,18 @@ class RegistrationController extends Controller
             $user->role = $regForm->role;
 
             if ($user->save()) {
+                $auth = Yii::$app->authManager;
+                $customerRole = $auth->getRole('customer');
+                $executorRole = $auth->getRole('executor');
+
+                if ($user->role === User::ROLE_CUSTOMER) {
+                    $auth->assign($customerRole, $user->id);
+                }
+
+                if ($user->role === User::ROLE_EXECUTOR) {
+                    $auth->assign($executorRole, $user->id);
+                }
+
                 $identity = User::findOne($user->id);
                 Yii::$app->user->login($identity);
             } else {
