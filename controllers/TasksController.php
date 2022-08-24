@@ -3,12 +3,19 @@
 namespace app\controllers;
 
 use app\models\Category;
+use app\models\CreateResponseForm;
+use app\models\CreateReviewForm;
 use app\models\CreateTaskForm;
-use app\models\Response;
 use app\models\User;
 use app\services\CreateTaskService;
+use app\services\ResponseService;
+use app\services\TaskService;
 use app\services\UploadFileService;
+use app\services\UserService;
 use yii\base\Exception;
+use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\Controller;
 use yii\web\Response as WebResponse;
 use app\models\Task;
 use app\models\TasksFilterForm;
@@ -19,25 +26,43 @@ use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 
-class TasksController extends SecuredController
+class TasksController extends Controller
 {
-    /**
-     * @return array|array[]
-     */
     public function behaviors(): array
     {
-        $rules = parent::behaviors();
-        $rule = [
-            'allow' => false,
-            'actions' => ['create'],
-            'matchCallback' => function ($rule, $action) {
-                return Yii::$app->user->identity->role === User::ROLE_EXECUTOR;
-            }
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['customer'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['refuse'],
+                        'roles' => ['executorCanRefuseTask'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->get('id'))
+                        ]
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['cancel'],
+                        'roles' => ['customerCanCancelTask'],
+                        'roleParams' => fn($rule) => [
+                            'task' => Task::findOne(Yii::$app->request->get('id'))
+                        ]
+                    ],
+                ],
+            ],
         ];
-
-        array_unshift($rules['access']['rules'], $rule);
-
-        return $rules;
     }
 
     /**
@@ -77,6 +102,7 @@ class TasksController extends SecuredController
      * @param int $id
      * @return string
      * @throws NotFoundHttpException
+     * @throws Exception
      */
     public function actionView(int $id): string
     {
@@ -90,19 +116,21 @@ class TasksController extends SecuredController
         $this->view->title = "$task->title :: Taskforce";
 
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
-
-        $responses = Response::find()
-            ->where(['task_id' => $id])
-            ->with('executor.avatarFile', 'executor.reviewsWhereUserIsReceiver')
-            ->all();
-
+        $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
+        $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
         $files = $task->files;
+
+        $responseForm = new CreateResponseForm();
+        $reviewForm = new CreateReviewForm();
 
         return $this->render('view', [
             'task' => $task,
             'taskStatusName' => $taskStatusName,
             'responses' => $responses,
-            'files' => $files
+            'actionsMarkup' => $actionsMarkup,
+            'files' => $files,
+            'responseForm' => $responseForm,
+            'reviewForm' => $reviewForm,
         ]);
     }
 
@@ -145,5 +173,54 @@ class TasksController extends SecuredController
             'createTaskForm' => $createTaskForm,
             'categoriesList' => $categoriesList,
         ]);
+    }
+
+    /**
+     * @param int $id
+     * @return WebResponse
+     * @throws NotFoundHttpException
+     * @throws StaleObjectException
+     */
+    public function actionRefuse(int $id): WebResponse
+    {
+        $task = Task::findOne($id);
+
+        if (!$task) {
+            throw new NotFoundHttpException();
+        }
+
+        $task->status = Task::STATUS_FAILED;
+        $task->update();
+
+        $executor = $task->executor;
+        $executor->updateCounters(['failed_tasks_count' => 1]);
+        $executor->rating = (new UserService())->countUserRating($executor);
+        $executor->status = User::STATUS_READY;
+        $executor->update();
+
+        return $this->redirect(['tasks/view', 'id' => $id]);
+    }
+
+    /**
+     * @param int $id
+     * @return WebResponse
+     * @throws NotFoundHttpException
+     * @throws StaleObjectException
+     */
+    public function actionCancel(int $id): WebResponse
+    {
+        $task = Task::findOne($id);
+        $user = Yii::$app->user->identity;
+
+        if (!$task) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($user->id === $task->customer_id && $task->status === Task::STATUS_NEW) {
+            $task->status = Task::STATUS_CANCELED;
+            $task->update();
+        }
+
+        return $this->redirect(['tasks/view', 'id' => $id]);
     }
 }

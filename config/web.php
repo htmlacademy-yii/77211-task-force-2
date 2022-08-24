@@ -65,6 +65,9 @@ $config = [
                 'user/view/<id:\d+>' => 'user/view',
             ],
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
     ],
     'params' => $params,
 ];

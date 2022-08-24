@@ -3,3 +3,7 @@ migrate:
 
 seed:
 	php yii fixture/load "*" --interactive=0
+
+auth:
+	php yii migrate --migrationPath=@yii/rbac/migrations --interactive=0
+	php yii rbac/init

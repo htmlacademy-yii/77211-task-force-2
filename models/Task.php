@@ -189,7 +189,7 @@ class Task extends ActiveRecord
         return [
             self::STATUS_NEW => 'Новое',
             self::STATUS_CANCELED => 'Отменено',
-            self::STATUS_PROCESSING => 'В работе',
+            self::STATUS_PROCESSING => 'На исполнении',
             self::STATUS_DONE => 'Выполнено',
             self::STATUS_FAILED => 'Провалено'
         ];

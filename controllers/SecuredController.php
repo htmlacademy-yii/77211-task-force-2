@@ -18,7 +18,14 @@ abstract class SecuredController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => false,
+                        'roles' => ['@'],
+                        'denyCallback' => function ($rule, $action) {
+                            $this->redirect(['tasks/index']);
+                        }
                     ]
                 ]
             ]
