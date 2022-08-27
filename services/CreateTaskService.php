@@ -16,6 +16,8 @@ class CreateTaskService
      */
     public function createTask(CreateTaskForm $form): Task
     {
+        $locationService = new LocationService();
+
         $task = new Task();
         $task->loadDefaultValues();
 
@@ -25,13 +27,18 @@ class CreateTaskService
         $task->category_id = $form->category_id;
         $task->budget = is_null($form->budget) ? null : (int) $form->budget;
 
-        // TODO: Добавить city_id и coordinates
-        $task->city_id = 1; // Временно!
+        if ($form->location !== '' && $locationService->isCityExistsInDB($form->city)) {
+            $task->city_id = $locationService->getCityIdByName($form->city);
+            $task->address = $form->address;
+            $task->coordinates = null;
+
+        }
 
         $task->deadline_at = $form->deadline_at;
+        $task->save();
 
-        if (!$task->save()) {
-            throw new Exception('Что-то пошло не так');
+        if ($form->location !== '') {
+            $locationService->setPointCoordinatesToTask($task->id, $form->lat, $form->long);
         }
 
         return $task;

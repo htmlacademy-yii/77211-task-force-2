@@ -19,6 +19,7 @@ class m220614_143704_create_task_table extends Migration
             'category_id' => $this->integer()->notNull(),
             'budget' => $this->integer(),
             'city_id' => $this->integer(),
+            'address' => $this->text(),
             'coordinates' => 'POINT',
             'created_at' => $this->dateTime()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
             'deadline_at' => $this->date(),
