@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\services\LocationService;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Yii;
@@ -29,7 +30,12 @@ class LocationController extends Controller
         ];
     }
 
-    public function actionGeocode(string $geocode)
+    /**
+     * @param string $geocode
+     * @return array
+     * @throws Exception
+     */
+    public function actionGeocode(string $geocode): array
     {
         $apiKey = Yii::$app->params['geocoderApiKey'];
         $apiUri = 'https://geocode-maps.yandex.ru/1.x';
