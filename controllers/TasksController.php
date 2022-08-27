@@ -120,6 +120,16 @@ class TasksController extends Controller
         $this->view->title = "$task->title :: Taskforce";
 
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
+        $locationData = [];
+
+        if (isset($task->city_id)) {
+            $locationData = [
+                'cityName' => $task->city->name,
+                'address' => $task->address,
+                'coordinates' => (new LocationService())->getTaskCoordinates($task->id),
+            ];
+        }
+
         $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
         $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
         $files = $task->files;
@@ -130,6 +140,7 @@ class TasksController extends Controller
         return $this->render('view', [
             'task' => $task,
             'taskStatusName' => $taskStatusName,
+            'locationData' => $locationData,
             'responses' => $responses,
             'actionsMarkup' => $actionsMarkup,
             'files' => $files,

@@ -4,6 +4,7 @@
  * @var yii\web\View $this
  * @var Task $task
  * @var string $taskStatusName
+ * @var array $locationData
  * @var Response[] $responses
  * @var File[] $files
  * @var CreateResponseForm $responseForm
@@ -18,7 +19,12 @@ use app\models\Task;
 use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\View;
 use yii\widgets\ActiveForm;
+
+$apiKey = Yii::$app->params['geocoderApiKey'];
+$this->registerJsFile("https://api-maps.yandex.ru/2.1/?apikey=$apiKey&lang=ru_RU", ['position' => View::POS_HEAD]);
+$this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
 
 ?>
 
@@ -35,12 +41,15 @@ use yii\widgets\ActiveForm;
             <?= $markup ?>
         <?php endforeach; ?>
     <?php endif; ?>
-    <div class="task-map">
-        <!-- TODO: Добавить вывод карты, города, адреса -->
-        <img class="map" src="/img/map.png" width="724" height="348" alt="Новый арбат, 23, к. 1">
-        <p class="map-address town">Москва</p>
-        <p class="map-address">Новый арбат, 23, к. 1</p>
-    </div>
+    <?php if (!empty($locationData)): ?>
+        <div class="task-map">
+            <div id="map" class="map"  data-lat="<?= $locationData['coordinates']['lat'] ?>" data-long="<?= $locationData['coordinates']['long'] ?>"></div>
+            <p class="map-address town"><?= Html::encode($locationData['cityName']) ?></p>
+            <?php if ($locationData['cityName'] !== $locationData['address']): ?>
+                <p class="map-address"><?= Html::encode($locationData['address']) ?></p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
     <?php if (!empty($responses)): ?>
         <h4 class="head-regular">Отклики на задание</h4>
         <?php foreach ($responses as $response): ?>
