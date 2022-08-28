@@ -8,6 +8,7 @@ use app\models\CreateReviewForm;
 use app\models\CreateTaskForm;
 use app\models\User;
 use app\services\CreateTaskService;
+use app\services\LocationService;
 use app\services\ResponseService;
 use app\services\TaskService;
 use app\services\UploadFileService;
@@ -28,6 +29,9 @@ use yii\widgets\ActiveForm;
 
 class TasksController extends Controller
 {
+    /**
+     * @return array[]
+     */
     public function behaviors(): array
     {
         return [
@@ -116,6 +120,16 @@ class TasksController extends Controller
         $this->view->title = "$task->title :: Taskforce";
 
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
+        $locationData = [];
+
+        if (isset($task->city_id)) {
+            $locationData = [
+                'cityName' => $task->city->name,
+                'address' => $task->address,
+                'coordinates' => (new LocationService())->getTaskCoordinates($task->id),
+            ];
+        }
+
         $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
         $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
         $files = $task->files;
@@ -126,6 +140,7 @@ class TasksController extends Controller
         return $this->render('view', [
             'task' => $task,
             'taskStatusName' => $taskStatusName,
+            'locationData' => $locationData,
             'responses' => $responses,
             'actionsMarkup' => $actionsMarkup,
             'files' => $files,
@@ -142,8 +157,15 @@ class TasksController extends Controller
     {
         $this->view->title = 'Cоздать задание :: Taskforce';
 
+        $user = Yii::$app->user->identity;
         $categoriesList = Category::getCategoriesList();
         $createTaskForm = new CreateTaskForm();
+        $userLocalityData = [
+            'location' => 'Россия, ' . $user->city->name,
+            'address' => $user->city->name,
+            'city' => $user->city->name,
+            'coordinates' => (new LocationService())->getUsersCityCoordinates(),
+        ];
 
         if (Yii::$app->request->getIsPost()) {
             $createTaskForm->load(Yii::$app->request->post());
@@ -172,6 +194,7 @@ class TasksController extends Controller
         return $this->render('create', [
             'createTaskForm' => $createTaskForm,
             'categoriesList' => $categoriesList,
+            'userLocalityData' => $userLocalityData,
         ]);
     }
 

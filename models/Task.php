@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property int $category_id
  * @property int|null $budget
  * @property int|null $city_id
+ * @property string $address
  * @property string|null $coordinates
  * @property string $created_at
  * @property string|null $deadline_at
@@ -30,6 +31,7 @@ use yii\db\ActiveRecord;
  * @property Review[] $reviews
  * @property File[] $files
  */
+
 class Task extends ActiveRecord
 {
     public const STATUS_NEW = 1;
@@ -54,7 +56,7 @@ class Task extends ActiveRecord
         return [
             [['customer_id', 'title', 'category_id'], 'required'],
             [['customer_id', 'executor_id', 'status', 'category_id', 'budget', 'city_id'], 'integer'],
-            [['description', 'coordinates'], 'string'],
+            [['description', 'address', 'coordinates'], 'string'],
             [['created_at', 'deadline_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
             [
@@ -103,6 +105,7 @@ class Task extends ActiveRecord
             'category_id' => 'Category ID',
             'budget' => 'Budget',
             'city_id' => 'City ID',
+            'address' => 'Location',
             'coordinates' => 'Coordinates',
             'created_at' => 'Created At',
             'deadline_at' => 'Deadline At',

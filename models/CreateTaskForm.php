@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class CreateTaskForm extends Model
@@ -10,6 +11,11 @@ class CreateTaskForm extends Model
     public string $description = '';
     public ?int $category_id = null;
     public ?string $budget = '';
+    public string $location = '';
+    public string $city = '';
+    public string $address = '';
+    public string $lat = '';
+    public string $long = '';
     public ?string $deadline_at = null;
     public array $files = [];
 
@@ -31,6 +37,11 @@ class CreateTaskForm extends Model
             'description' => 'Подробности задания',
             'category_id' => 'Категория',
             'budget' => 'Бюджет',
+            'location' => 'Локация',
+            'city' => 'City',
+            'address' => 'Address',
+            'lat' => 'Lat',
+            'long' => 'Long',
             'deadline_at' => 'Срок исполнения',
             'files' => 'Файлы'
         ];
@@ -44,12 +55,13 @@ class CreateTaskForm extends Model
         return [
             [['title', 'description', 'category_id'], 'required'],
             [['category_id', 'budget'], 'integer'],
-            [['title', 'description', 'deadline_at'], 'string'],
+            [['title', 'description', 'location', 'city', 'address', 'lat', 'long', 'deadline_at'], 'string'],
             [['title'], 'string', 'length' => [10, 255]],
             [['description'], 'string', 'min' => 30],
             [['budget'], 'default', 'value' => null],
             [['budget'], 'integer', 'min' => 1],
             [['deadline_at'], 'default', 'value' => null],
+            [['location'], 'showLocationErrorMessage', 'when' => fn($model) => $model->city !== Yii::$app->user->identity->city->name],
             [
                 ['deadline_at'],
                 'date',
@@ -66,5 +78,10 @@ class CreateTaskForm extends Model
             ],
             [['files'], 'file', 'maxFiles' => 5],
         ];
+    }
+
+    public function showLocationErrorMessage($attribute, $params)
+    {
+        $this->addError($attribute, 'Вы можете указывать только адрес в рамках города, указанного при регистрации!');
     }
 }
