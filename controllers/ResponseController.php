@@ -8,6 +8,7 @@ use app\models\Task;
 use app\models\User;
 use app\services\ResponseService;
 use Yii;
+use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
@@ -59,20 +60,15 @@ class ResponseController extends SecuredController
     public function actionCreate(): WebResponse|bool
     {
         $responseForm = new CreateResponseForm();
+        $responseService = new ResponseService();
         $user = Yii::$app->user->identity;
 
         if ($responseForm->load(Yii::$app->request->post()) && $responseForm->validate()) {
 
-            $isUserMadeResponse = (new ResponseService())->checkIsUserMadeResponseForTask($user->id, $responseForm->task_id);
+            $isUserMadeResponse = $responseService->checkIsUserMadeResponseForTask($user->id, $responseForm->task_id);
 
             if ($user->role === User::ROLE_EXECUTOR && !$isUserMadeResponse) {
-                $response = new Response();
-                $response->loadDefaultValues();
-                $response->task_id = $responseForm->task_id;
-                $response->executor_id = $user->id;
-                $response->comment = $responseForm->comment;
-                $response->budget = (int) $responseForm->budget;
-                $response->save();
+                $response = $responseService->createResponse($responseForm, $user);
 
                 return $this->redirect(['tasks/view', 'id' => $response->task_id]);
             }
@@ -86,6 +82,7 @@ class ResponseController extends SecuredController
      * @return WebResponse
      * @throws NotFoundHttpException
      * @throws StaleObjectException
+     * @throws Exception
      */
     public function actionAccept(int $id): WebResponse
     {
@@ -97,14 +94,10 @@ class ResponseController extends SecuredController
 
         $task = $response->task;
         $executor = $response->executor;
+        $responseService = new ResponseService();
 
         if (Yii::$app->user->id === $task->customer_id && $task->status === Task::STATUS_NEW) {
-            $task->status = Task::STATUS_PROCESSING;
-            $task->executor_id = $response->executor_id;
-            $task->save();
-
-            $executor->status = User::STATUS_BUSY;
-            $executor->update();
+            $responseService->acceptResponse($task, $executor);
         }
 
         return $this->redirect(['tasks/view', 'id' => $task->id]);
@@ -124,8 +117,8 @@ class ResponseController extends SecuredController
             throw new NotFoundHttpException();
         }
 
-        $response->is_refused = 1;
-        $response->update();
+        $responseService = new ResponseService();
+        $responseService->refuseResponse($response);
 
         return $this->redirect(['tasks/view', 'id' => $response->task_id]);
     }
