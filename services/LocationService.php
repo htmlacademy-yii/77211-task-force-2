@@ -4,12 +4,50 @@ namespace app\services;
 
 use app\models\City;
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Yii;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 class LocationService
 {
+    /**
+     * @param string $geocode
+     * @return array
+     * @throws Exception
+     */
+    public function getGeocodeData(string $geocode): array
+    {
+        $apiKey = Yii::$app->params['geocoderApiKey'];
+        $apiUri = 'https://geocode-maps.yandex.ru/1.x';
+        $result = [];
+        $client = new Client();
+
+        try {
+            $response = $client->request('GET', $apiUri, [
+                'query' => [
+                    'geocode' => $geocode,
+                    'apikey' => $apiKey,
+                    'format' => 'json'
+                ],
+            ]);
+
+            $content = $response->getBody()->getContents();
+            $responseData = json_decode($content, true);
+
+            $geoObjects = ArrayHelper::getValue($responseData, 'response.GeoObjectCollection.featureMember');
+
+            foreach ($geoObjects as $geoObject) {
+                $result[] = $this->getLocationData($geoObject);
+            }
+        } catch (GuzzleException $e) {
+            $result = [];
+        }
+
+        return $result;
+    }
+
     /**
      * @param string $table
      * @param int $id
