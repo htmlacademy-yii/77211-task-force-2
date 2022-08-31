@@ -6,13 +6,10 @@ use app\models\Category;
 use app\models\CreateResponseForm;
 use app\models\CreateReviewForm;
 use app\models\CreateTaskForm;
-use app\models\User;
-use app\services\CreateTaskService;
 use app\services\LocationService;
 use app\services\ResponseService;
 use app\services\TaskService;
 use app\services\UploadFileService;
-use app\services\UserService;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -119,6 +116,9 @@ class TasksController extends Controller
 
         $this->view->title = "$task->title :: Taskforce";
 
+        $taskService = new TaskService();
+        $responseService = new ResponseService();
+        $locationService = new LocationService();
         $taskStatusName = Task::getTaskStatusesList()[$task->status];
         $locationData = [];
 
@@ -126,12 +126,12 @@ class TasksController extends Controller
             $locationData = [
                 'cityName' => $task->city->name,
                 'address' => $task->address,
-                'coordinates' => (new LocationService())->getTaskCoordinates($task->id),
+                'coordinates' => $locationService->getTaskCoordinates($task->id),
             ];
         }
 
-        $responses = (new ResponseService())->getResponses($task, Yii::$app->user->identity);
-        $actionsMarkup = (new TaskService())->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
+        $responses = $responseService->getResponses($task, Yii::$app->user->identity);
+        $actionsMarkup = $taskService->getAvailableActionsMarkup(Yii::$app->user->identity, $task);
         $files = $task->files;
 
         $responseForm = new CreateResponseForm();
@@ -158,13 +158,16 @@ class TasksController extends Controller
         $this->view->title = 'Cоздать задание :: Taskforce';
 
         $user = Yii::$app->user->identity;
+        $locationService = new LocationService();
+        $taskService = new TaskService();
+        $uploadFileService = new UploadFileService();
         $categoriesList = Category::getCategoriesList();
         $createTaskForm = new CreateTaskForm();
         $userLocalityData = [
             'location' => 'Россия, ' . $user->city->name,
             'address' => $user->city->name,
             'city' => $user->city->name,
-            'coordinates' => (new LocationService())->getUsersCityCoordinates(),
+            'coordinates' => $locationService->getUsersCityCoordinates(),
         ];
 
         if (Yii::$app->request->getIsPost()) {
@@ -176,13 +179,13 @@ class TasksController extends Controller
             }
 
             if ($createTaskForm->validate()) {
-                $task = (new CreateTaskService())->createTask($createTaskForm);
+                $task = $taskService->createTask($createTaskForm);
 
                 $uploadedFiles = UploadedFile::getInstances($createTaskForm, 'files');
 
                 if (!empty($uploadedFiles)) {
                     foreach ($uploadedFiles as $uploadedFile) {
-                        $file = (new UploadFileService())->upload($uploadedFile, 'task', $task->id);
+                        $file = $uploadFileService->upload($uploadedFile, 'task', $task->id);
                         $task->link('files', $file);
                     }
                 }
@@ -198,11 +201,13 @@ class TasksController extends Controller
         ]);
     }
 
+
     /**
      * @param int $id
      * @return WebResponse
      * @throws NotFoundHttpException
      * @throws StaleObjectException
+     * @throws \yii\db\Exception
      */
     public function actionRefuse(int $id): WebResponse
     {
@@ -212,14 +217,8 @@ class TasksController extends Controller
             throw new NotFoundHttpException();
         }
 
-        $task->status = Task::STATUS_FAILED;
-        $task->update();
-
-        $executor = $task->executor;
-        $executor->updateCounters(['failed_tasks_count' => 1]);
-        $executor->rating = (new UserService())->countUserRating($executor);
-        $executor->status = User::STATUS_READY;
-        $executor->update();
+        $taskService = new TaskService();
+        $taskService->refuseTask($task);
 
         return $this->redirect(['tasks/view', 'id' => $id]);
     }
@@ -233,15 +232,16 @@ class TasksController extends Controller
     public function actionCancel(int $id): WebResponse
     {
         $task = Task::findOne($id);
-        $user = Yii::$app->user->identity;
 
         if (!$task) {
             throw new NotFoundHttpException();
         }
 
+        $user = Yii::$app->user->identity;
+        $taskService = new TaskService();
+
         if ($user->id === $task->customer_id && $task->status === Task::STATUS_NEW) {
-            $task->status = Task::STATUS_CANCELED;
-            $task->update();
+            $taskService->cancelTask($task);
         }
 
         return $this->redirect(['tasks/view', 'id' => $id]);
