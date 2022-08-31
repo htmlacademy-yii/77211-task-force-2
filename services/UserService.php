@@ -7,6 +7,10 @@ use yii\helpers\ArrayHelper;
 
 class UserService
 {
+    /**
+     * @param User $user
+     * @return float
+     */
     public function countUserRating(User $user): float
     {
         $reviews = $user->reviewsWhereUserIsReceiver;
@@ -16,5 +20,14 @@ class UserService
         $userFailedTasksCount = $user->failed_tasks_count;
 
         return round($reviewsRateSum / ($reviewsCount + $userFailedTasksCount), 2);
+    }
+
+    /**
+     * @param string $email
+     * @return User|null
+     */
+    public function getUserByEmail(string $email): ?User
+    {
+        return User::find()->where(['email' => $email])->one();
     }
 }
