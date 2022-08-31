@@ -195,15 +195,6 @@ $this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
 
             <?= Html::submitInput('Завершить', ['class' => 'button button--pop-up button--blue']) ?>
             <?php ActiveForm::end() ?>
-            <!--            <form>-->
-            <!--                <div class="form-group">-->
-            <!--                    <label class="control-label" for="completion-comment">Ваш комментарий</label>-->
-            <!--                    <textarea id="completion-comment"></textarea>-->
-            <!--                </div>-->
-            <!--                <p class="completion-head control-label">Оценка работы</p>-->
-            <!--                <div class="stars-rating big active-stars"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>-->
-            <!--                <input type="submit" class="button button--pop-up button--blue" value="Завершить">-->
-            <!--            </form>-->
         </div>
         <div class="button-container">
             <button class="button--close" type="button">Закрыть окно</button>
