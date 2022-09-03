@@ -74,12 +74,13 @@ class TasksController extends Controller
         $this->view->title = 'Новые задания :: Taskforce';
 
         $categoriesList = Category::getCategoriesList();
+        $tasksFilterService = new TasksFilterService();
 
         $filterForm = new TasksFilterForm();
         $filterForm->load(Yii::$app->request->get());
 
         $tasksDataProvider = new ActiveDataProvider([
-            'query' => (new TasksFilterService())->filter($filterForm),
+            'query' => $tasksFilterService->filter($filterForm),
             'pagination' => [
                 'pageSize' => 5,
                 'forcePageParam' => false,

@@ -12,6 +12,9 @@ use yii\web\Response;
 
 class UserController extends Controller
 {
+    /**
+     * @return array[]
+     */
     public function behaviors(): array
     {
         return [
