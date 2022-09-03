@@ -69,6 +69,19 @@ $config = [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => $params['vkClientId'],
+                    'clientSecret' => $params['vkClientSecret'],
+                    'scope' => 'email',
+                    'apiVersion' => '5.131',
+                    'title' => 'VK',
+                ],
+            ],
+        ]
     ],
     'params' => $params,
 ];
