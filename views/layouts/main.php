@@ -37,7 +37,7 @@ AppAsset::register($this);
             <?= Menu::widget([
                 'items' => [
                     ['label' => 'Новое', 'url' => ['tasks/index']],
-                    ['label' => 'Мои задания', 'url' => '#'],
+                    ['label' => 'Мои задания','url' => ['my-tasks/index'],],
                     [
                         'label' => 'Создать задание',
                         'url' => ['tasks/create'],

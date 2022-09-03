@@ -18,37 +18,7 @@ use yii\widgets\ListView;
 
 <div class="left-column">
     <h3 class="head-main head-task">Новые задания</h3>
-    <?= ListView::widget([
-        'dataProvider' => $tasksDataProvider,
-        'itemView' => '_task',
-        'itemOptions' => [
-            'tag' => false
-        ],
-        'pager' => [
-            'hideOnSinglePage' => true,
-            'options' => [
-                'class' => 'pagination-list'
-            ],
-            'activePageCssClass' => 'pagination-item--active',
-            'linkContainerOptions' => [
-                'class' => 'pagination-item'
-            ],
-            'linkOptions' => [
-                'class' => 'link link--page'
-            ],
-            'nextPageCssClass' => 'mark',
-            'prevPageCssClass' => 'mark',
-            'nextPageLabel' => '',
-            'prevPageLabel' => '',
-            'disabledPageCssClass' => ''
-        ],
-        'summary' => '',
-        'separator' => '',
-        'id' => false,
-        'options' => [
-            'tag' => false,
-        ]
-    ]); ?>
+    <?= $this->render('//inc/_list', ['tasksDataProvider' => $tasksDataProvider]) ?>
 </div>
 <div class="right-column">
     <div class="right-card black">

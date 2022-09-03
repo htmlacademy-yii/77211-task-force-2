@@ -61,6 +61,7 @@ $config = [
             ],
             'rules' => [
                 'tasks' => 'tasks/index',
+                'my-tasks' => 'my-tasks/index',
                 'tasks/view/<id:\d+>' => 'tasks/view',
                 'user/view/<id:\d+>' => 'user/view',
                 'location/<geocode>' => 'location/geocode',
