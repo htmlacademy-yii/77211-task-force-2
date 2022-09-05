@@ -66,11 +66,13 @@ use yii\helpers\Url;
             <p class="bio-info">
                 <span class="country-info">Россия</span>, <span class="town-info"><?= $user->city->name ?></span>, <span
                         class="age-info">
-                    <?= \Yii::$app->i18n->messageFormatter->format(
-                        '{n, plural, one{# год} few{# года} many{# лет} other{# года}}',
-                        ['n' => $user->age],
-                        \Yii::$app->language
-                    ); ?>
+                    <?php if (!is_null($user->birthdate)): ?>
+                        <?= \Yii::$app->i18n->messageFormatter->format(
+                            '{n, plural, one{# год} few{# года} many{# лет} other{# года}}',
+                            ['n' => $user->age],
+                            \Yii::$app->language
+                        ); ?>
+                    <?php endif; ?>
                 </span>
             </p>
         </div>
@@ -140,21 +142,25 @@ use yii\helpers\Url;
     <div class="right-card white">
         <h4 class="head-card">Контакты</h4>
         <ul class="enumeration-list">
-            <li class="enumeration-item">
-                <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
-                    <?= Html::encode($user->phone) ?>
-                </a>
-            </li>
+            <?php if (!is_null($user->phone)): ?>
+                <li class="enumeration-item">
+                    <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
+                        <?= Html::encode($user->phone) ?>
+                    </a>
+                </li>
+            <?php endif; ?>
             <li class="enumeration-item">
                 <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email">
                     <?= Html::encode($user->email) ?>
                 </a>
             </li>
-            <li class="enumeration-item">
-                <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
-                    <?= Html::encode($user->telegram) ?>
-                </a>
-            </li>
+            <?php if (!is_null($user->telegram)): ?>
+                <li class="enumeration-item">
+                    <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
+                        @<?= Html::encode($user->telegram) ?>
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </div>

@@ -5,11 +5,14 @@
 
 use app\assets\AppAsset;
 use app\models\User;
+use app\services\LayoutService;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
 
 AppAsset::register($this);
+
+$user = Yii::$app->user->identity;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -37,13 +40,19 @@ AppAsset::register($this);
             <?= Menu::widget([
                 'items' => [
                     ['label' => 'Новое', 'url' => ['tasks/index']],
-                    ['label' => 'Мои задания','url' => ['my-tasks/index'],],
+                    ['label' => 'Мои задания', 'url' => ['my-tasks/index'],],
                     [
                         'label' => 'Создать задание',
                         'url' => ['tasks/create'],
-                        'visible' => Yii::$app->user->identity->role === User::ROLE_CUSTOMER,
+                        'visible' => $user->role === User::ROLE_CUSTOMER,
                     ],
-                    ['label' => 'Настройки', 'url' => '#'],
+                    [
+                        'label' => 'Настройки',
+                        'url' => ['profile/index'],
+                        'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
+                            return str_contains(Yii::$app->controller->route, 'profile');
+                        }
+                    ],
                 ],
                 'activeCssClass' => 'list-item--active',
                 'options' => [
@@ -57,15 +66,29 @@ AppAsset::register($this);
         </div>
     </nav>
     <div class="user-block">
-        <a href="<?= Url::to(['user/view', 'id' => Yii::$app->user->id]) ?>">
-            <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
+        <a href="<?= Url::to(['user/view', 'id' => $user->id]) ?>">
+            <?php if (!is_null($user->avatar_file_id)): ?>
+                <?= Html::img($user->avatarFile->path, [
+                    'class' => 'user-photo',
+                    'alt' => 'Аватар',
+                    'width' => 55,
+                    'height' => 55,
+                ]) ?>
+            <?php else: ?>
+                <?= Html::img('@web/img/avatars/1.png', [
+                    'class' => 'user-photo',
+                    'alt' => 'Аватар',
+                    'width' => 55,
+                    'height' => 55,
+                ]) ?>
+            <?php endif; ?>
         </a>
         <div class="user-menu">
-            <p class="user-name"><?= Html::encode(Yii::$app->user->identity->name) ?></p>
+            <p class="user-name"><?= Html::encode($user->name) ?></p>
             <div class="popup-head">
                 <ul class="popup-menu">
                     <li class="menu-item">
-                        <a href="#" class="link">Настройки</a>
+                        <a href="<?= Url::to(['profile/index']) ?>" class="link">Настройки</a>
                     </li>
                     <li class="menu-item">
                         <a href="#" class="link">Связаться с нами</a>
@@ -80,7 +103,7 @@ AppAsset::register($this);
     </div>
 </header>
 <?php endif; ?>
-<main class="main-content container <?= str_contains(Yii::$app->request->url, 'tasks/create') ? 'main-content--center' : '' ?>">
+<main class="main-content container <?= LayoutService::addClassToMainSection(Yii::$app->controller->route) ?>">
     <?= $content ?>
 </main>
 <?php $this->endBody() ?>

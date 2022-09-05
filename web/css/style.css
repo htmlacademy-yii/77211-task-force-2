@@ -1319,6 +1319,8 @@ input[type=date] {
           align-items: center;
   margin-bottom: 13px; }
   .photo-editing .button {
+    box-sizing: border-box;
+    width: 212px;
     font-size: 19px;
     padding-top: 15px;
     padding-bottom: 15px;
@@ -1326,6 +1328,9 @@ input[type=date] {
     margin-left: 23px; }
   .photo-editing img {
     margin-top: 12px; }
+  .photo-editing .help-block {
+    margin-top: 10px;
+    line-height: 1.25;  }
 
 .my-profile-form {
   width: 512px;

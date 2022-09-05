@@ -2,10 +2,14 @@
 
 namespace app\services;
 
+use app\models\Category;
+use app\models\File;
+use app\models\ProfileForm;
 use app\models\RegistrationForm;
 use app\models\User;
 use Yii;
 use yii\base\Exception;
+use yii\db\StaleObjectException;
 use yii\helpers\ArrayHelper;
 
 class UserService
@@ -66,5 +70,58 @@ class UserService
     public function getUserByEmail(string $email): ?User
     {
         return User::find()->where(['email' => $email])->one();
+    }
+
+    /**
+     * @param ProfileForm $form
+     * @param User $user
+     * @param File|null $file
+     * @return void
+     * @throws \yii\db\Exception
+     * @throws StaleObjectException
+     */
+    public function updateUserProfile(ProfileForm $form, User $user, ?File $file = null): void
+    {
+        $user->name = $form->name;
+        $user->email = $form-> email;
+        $user->phone = $form->phone;
+        $user->telegram = $form->telegram;
+        $user->info = $form->info;
+        $user->update();
+
+        if (!is_null($file)) {
+            $oldAvatar = $user->avatarFile;
+
+            if (!is_null($oldAvatar)) {
+                $user->unlink('avatarFile', $oldAvatar);
+            }
+
+            $user->link('avatarFile', $file);
+        }
+    }
+
+    /**
+     * @param array|null $newCategoriesIds
+     * @param User $user
+     * @return void
+     * @throws StaleObjectException
+     * @throws \yii\db\Exception
+     */
+    public function updateUserCategories(?array $newCategoriesIds, User $user): void
+    {
+        $oldCategories = $user->categories;
+
+        if (!empty($oldCategories)) {
+            foreach ($oldCategories as $oldCategory) {
+                $user->unlink('categories', $oldCategory, true);
+            }
+        }
+
+        if (!is_null($newCategoriesIds)) {
+            foreach ($newCategoriesIds as $categoryId) {
+                $newCategory = Category::findOne($categoryId);
+                $user->link('categories', $newCategory);
+            }
+        }
     }
 }

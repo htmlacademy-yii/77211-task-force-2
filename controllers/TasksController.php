@@ -9,7 +9,7 @@ use app\models\CreateTaskForm;
 use app\services\LocationService;
 use app\services\ResponseService;
 use app\services\TaskService;
-use app\services\UploadFileService;
+use app\services\FileService;
 use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
@@ -161,7 +161,7 @@ class TasksController extends Controller
         $user = Yii::$app->user->identity;
         $locationService = new LocationService();
         $taskService = new TaskService();
-        $uploadFileService = new UploadFileService();
+        $fileService = new FileService();
         $categoriesList = Category::getCategoriesList();
         $createTaskForm = new CreateTaskForm();
         $userLocalityData = [
@@ -186,7 +186,7 @@ class TasksController extends Controller
 
                 if (!empty($uploadedFiles)) {
                     foreach ($uploadedFiles as $uploadedFile) {
-                        $file = $uploadFileService->upload($uploadedFile, 'task', $task->id);
+                        $file = $fileService->upload($uploadedFile, 'task', $task->id);
                         $task->link('files', $file);
                     }
                 }

@@ -7,7 +7,7 @@ use Yii;
 use yii\base\Exception;
 use yii\web\UploadedFile;
 
-class UploadFileService
+class FileService
 {
     /**
      * @param UploadedFile $uploadedFile

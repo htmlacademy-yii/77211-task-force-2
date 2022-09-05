@@ -6,10 +6,10 @@ use yii\base\Model;
 
 class TasksFilterForm extends Model
 {
-    public $categories;
-    public $withoutResponse;
-    public $remote;
-    public $period;
+    public ?array $categories = null;
+    public ?string $withoutResponse = null;
+    public ?string $remote = null;
+    public string $period = '0';
 
     public function formName()
     {
