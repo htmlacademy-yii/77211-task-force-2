@@ -4,14 +4,19 @@ namespace app\controllers;
 
 use app\models\Category;
 use app\models\ProfileForm;
+use app\models\SecurityForm;
 use app\models\User;
 use app\services\FileService;
 use app\services\UserService;
 use Yii;
+use yii\base\Exception;
+use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\widgets\ActiveForm;
 
 class ProfileController extends Controller
 {
@@ -33,7 +38,13 @@ class ProfileController extends Controller
         ];
     }
 
-    public function actionIndex()
+    /**
+     * @return Response|string
+     * @throws Exception
+     * @throws \yii\db\Exception
+     * @throws StaleObjectException
+     */
+    public function actionIndex(): Response|string
     {
         $this->view->title = 'Настройки профиля :: Taskforce';
 
@@ -69,8 +80,38 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function actionSecurity()
+    /**
+     * @return Response|array|string
+     * @throws Exception
+     * @throws StaleObjectException
+     */
+    public function actionSecurity(): Response|array|string
     {
-        return $this->render('security');
+        $this->view->title = 'Настройки безопасности :: Taskforce';
+
+        $user = Yii::$app->user->identity;
+        $isUserShowContacts = $user->show_only_customer;
+        $securityForm = new SecurityForm();
+        $userService = new UserService();
+
+        if (Yii::$app->request->getIsPost()) {
+            $securityForm->load(Yii::$app->request->post());
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($securityForm);
+            }
+
+            if ($securityForm->validate()) {
+                $userService->updateUserSecurity($securityForm, $user);
+                return $this->redirect(['user/view', 'id' => $user->id]);
+            }
+        }
+
+        return $this->render('security', [
+            'user' => $user,
+            'securityForm' => $securityForm,
+            'isUserShowContacts' => $isUserShowContacts
+        ]);
     }
 }

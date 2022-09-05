@@ -3,6 +3,7 @@
 /**
  * @var yii\web\View $this
  * @var User $user
+ * @var User $currentUser
  * @var Review[] $reviews
  */
 
@@ -139,28 +140,30 @@ use yii\helpers\Url;
             <dd><?= $user->getUserStatusesList()[$user->status] ?></dd>
         </dl>
     </div>
-    <div class="right-card white">
-        <h4 class="head-card">Контакты</h4>
-        <ul class="enumeration-list">
-            <?php if (!is_null($user->phone)): ?>
+    <?php if ($currentUser->role === User::ROLE_CUSTOMER || $currentUser->id === $user->id || !$user->show_only_customer): ?>
+        <div class="right-card white">
+            <h4 class="head-card">Контакты</h4>
+            <ul class="enumeration-list">
+                <?php if (!is_null($user->phone)): ?>
+                    <li class="enumeration-item">
+                        <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
+                            <?= Html::encode($user->phone) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="enumeration-item">
-                    <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
-                        <?= Html::encode($user->phone) ?>
+                    <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email">
+                        <?= Html::encode($user->email) ?>
                     </a>
                 </li>
-            <?php endif; ?>
-            <li class="enumeration-item">
-                <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email">
-                    <?= Html::encode($user->email) ?>
-                </a>
-            </li>
-            <?php if (!is_null($user->telegram)): ?>
-                <li class="enumeration-item">
-                    <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
-                        @<?= Html::encode($user->telegram) ?>
-                    </a>
-                </li>
-            <?php endif; ?>
-        </ul>
-    </div>
+                <?php if (!is_null($user->telegram)): ?>
+                    <li class="enumeration-item">
+                        <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
+                            @<?= Html::encode($user->telegram) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>

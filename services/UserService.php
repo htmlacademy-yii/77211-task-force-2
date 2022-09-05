@@ -6,6 +6,7 @@ use app\models\Category;
 use app\models\File;
 use app\models\ProfileForm;
 use app\models\RegistrationForm;
+use app\models\SecurityForm;
 use app\models\User;
 use Yii;
 use yii\base\Exception;
@@ -123,5 +124,23 @@ class UserService
                 $user->link('categories', $newCategory);
             }
         }
+    }
+
+    /**
+     * @param SecurityForm $securityForm
+     * @param User $user
+     * @return void
+     * @throws Exception
+     * @throws StaleObjectException
+     */
+    public function updateUserSecurity(SecurityForm $securityForm, User $user): void
+    {
+        $newPassword = $securityForm->password;
+
+        if ($newPassword !== '') {
+            $user->password = Yii::$app->getSecurity()->generatePasswordHash($securityForm->password);
+        }
+        $user->show_only_customer = $securityForm->showOnlyCustomer;
+        $user->update();
     }
 }

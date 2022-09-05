@@ -61,7 +61,11 @@ class CreateTaskForm extends Model
             [['budget'], 'default', 'value' => null],
             [['budget'], 'integer', 'min' => 1],
             [['deadline_at'], 'default', 'value' => null],
-            [['location'], 'showLocationErrorMessage', 'when' => fn($model) => $model->city !== Yii::$app->user->identity->city->name],
+            [
+                ['location'],
+                'showLocationErrorMessage',
+                'when' => fn($model) => $model->city !== Yii::$app->user->identity->city->name
+            ],
             [
                 ['deadline_at'],
                 'date',

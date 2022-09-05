@@ -31,7 +31,6 @@ class UserController extends Controller
         ];
     }
 
-
     /**
      * @param $id
      * @return string
@@ -40,6 +39,7 @@ class UserController extends Controller
     public function actionView($id): string
     {
         $user = User::findOne($id);
+        $currentUser = Yii::$app->user->identity;
 
         if (!$user) {
             throw new NotFoundHttpException();
@@ -54,6 +54,7 @@ class UserController extends Controller
 
         return $this->render('view', [
             'user' => $user,
+            'currentUser' => $currentUser,
             'reviews' => $reviews,
         ]);
     }
