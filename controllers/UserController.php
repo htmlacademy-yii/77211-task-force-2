@@ -41,7 +41,7 @@ class UserController extends Controller
         $user = User::findOne($id);
         $currentUser = Yii::$app->user->identity;
 
-        if (!$user) {
+        if (!$user || $user->role === User::ROLE_CUSTOMER) {
             throw new NotFoundHttpException();
         }
 
