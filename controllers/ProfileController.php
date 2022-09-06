@@ -77,6 +77,10 @@ class ProfileController extends Controller
                     $userService->updateUserCategories($profileForm->categories, $user);
                 }
 
+                if ($user->role === User::ROLE_CUSTOMER) {
+                    return $this->refresh();
+                }
+
                 return $this->redirect(['user/view', 'id' => $user->id]);
             }
         }
@@ -113,6 +117,11 @@ class ProfileController extends Controller
 
             if ($securityForm->validate()) {
                 $userService->updateUserSecurity($securityForm, $user);
+
+                if ($user->role === User::ROLE_CUSTOMER) {
+                    return $this->refresh();
+                }
+
                 return $this->redirect(['user/view', 'id' => $user->id]);
             }
         }

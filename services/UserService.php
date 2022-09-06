@@ -84,7 +84,8 @@ class UserService
     public function updateUserProfile(ProfileForm $form, User $user, ?File $file = null): void
     {
         $user->name = $form->name;
-        $user->email = $form-> email;
+        $user->email = $form->email;
+        $user->birthdate = $form->birthdate;
         $user->phone = $form->phone;
         $user->telegram = $form->telegram;
         $user->info = $form->info;
