@@ -9,6 +9,7 @@
 
 use app\models\Review;
 use app\models\User;
+use app\services\UserService;
 use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -140,7 +141,7 @@ use yii\helpers\Url;
             <dd><?= $user->getUserStatusesList()[$user->status] ?></dd>
         </dl>
     </div>
-    <?php if ($currentUser->role === User::ROLE_CUSTOMER || $currentUser->id === $user->id || !$user->show_only_customer): ?>
+    <?php if (UserService::showExecutorContacts($currentUser, $user)): ?>
         <div class="right-card white">
             <h4 class="head-card">Контакты</h4>
             <ul class="enumeration-list">

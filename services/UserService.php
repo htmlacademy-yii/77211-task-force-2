@@ -143,4 +143,22 @@ class UserService
         $user->show_only_customer = $securityForm->showOnlyCustomer;
         $user->update();
     }
+
+    public static function showExecutorContacts(User $currentUser, User $user): bool
+    {
+        if ($user->show_only_customer === 0) {
+            return true;
+        }
+
+        if ($currentUser->id === $user->id && $user->show_only_customer === 1) {
+            return true;
+        }
+
+        if ($currentUser->role === User::ROLE_CUSTOMER && $user->show_only_customer === 1) {
+            $currentUserTasks = $currentUser->getTasksWhereUserIsCustomer();
+            return $currentUserTasks->where(['executor_id' => $user->id])->exists();
+        }
+
+        return false;
+    }
 }
