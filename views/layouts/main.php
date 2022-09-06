@@ -26,7 +26,7 @@ $user = Yii::$app->user->identity;
 </head>
 <body>
 <?php $this->beginBody() ?>
-<?php if (!str_contains(Yii::$app->request->url, 'registration')): ?>
+<?php if (!str_contains(Yii::$app->request->url, 'registration') && !Yii::$app->user->isGuest): ?>
 <header class="page-header">
     <nav class="main-nav">
         <a href='<?= Url::to(['tasks/index']) ?>' class="header-logo">
