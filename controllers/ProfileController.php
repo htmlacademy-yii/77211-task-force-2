@@ -39,12 +39,12 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return Response|string
+     * @return Response|array|string
      * @throws Exception
-     * @throws \yii\db\Exception
      * @throws StaleObjectException
+     * @throws \yii\db\Exception
      */
-    public function actionIndex(): Response|string
+    public function actionIndex(): Response|array|string
     {
         $this->view->title = 'Настройки профиля :: Taskforce';
 
@@ -56,20 +56,29 @@ class ProfileController extends Controller
         $categoriesList = Category::getCategoriesList();
         $userCategoriesList = ArrayHelper::getColumn($user->categories, 'id');
 
-        if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate()) {
-            $avatar = null;
-            $uploadedFile = UploadedFile::getInstance($profileForm, 'avatar');
-            if (!empty($uploadedFile)) {
-                $avatar = $fileService->upload($uploadedFile, 'avatar', $user->id);
+        if (Yii::$app->request->getIsPost()) {
+            $profileForm->load(Yii::$app->request->post());
+
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($profileForm);
             }
 
-            $userService->updateUserProfile($profileForm, $user, $avatar);
+            if ($profileForm->validate()) {
+                $avatar = null;
+                $uploadedFile = UploadedFile::getInstance($profileForm, 'avatar');
+                if (!empty($uploadedFile)) {
+                    $avatar = $fileService->upload($uploadedFile, 'avatar', $user->id);
+                }
 
-            if ($user->role === User::ROLE_EXECUTOR) {
-                $userService->updateUserCategories($profileForm->categories, $user);
+                $userService->updateUserProfile($profileForm, $user, $avatar);
+
+                if ($user->role === User::ROLE_EXECUTOR) {
+                    $userService->updateUserCategories($profileForm->categories, $user);
+                }
+
+                return $this->redirect(['user/view', 'id' => $user->id]);
             }
-
-            return $this->redirect(['user/view', 'id' => $user->id]);
         }
 
         return $this->render('index', [

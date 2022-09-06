@@ -57,7 +57,7 @@ use yii\widgets\ActiveForm;
         </div>
         <?= $form->field($profileForm, 'name')->textInput(['value' => $user->name])?>
         <div class="half-wrapper">
-            <?= $form->field($profileForm, 'email')
+            <?= $form->field($profileForm, 'email', ['enableAjaxValidation' => true])
                 ->textInput(['type' => 'email', 'value' => $user->email]) ?>
             <?= $form->field($profileForm, 'birthdate')
                 ->textInput(['type' => 'date', 'value' => $user->birthdate ?? '']) ?>

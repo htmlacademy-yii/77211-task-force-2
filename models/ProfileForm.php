@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class ProfileForm extends Model
@@ -14,15 +15,6 @@ class ProfileForm extends Model
     public ?string $telegram = null;
     public ?string $info = null;
     public ?array $categories = null;
-
-//    public string $avatar = '';
-//    public string $name;
-//    public string $email;
-//    public string $birthdate = '';
-//    public string $phone = '';
-//    public string $telegram = '';
-//    public string $info = '';
-//    public ?array $categories = null;
 
     /**
      * @return string
@@ -64,6 +56,14 @@ class ProfileForm extends Model
             [['telegram'], 'string', 'max' => 64],
             [['info'], 'string'],
             [['birthdate'], 'date', 'format' => 'php:Y-m-d'],
+            [
+                'email',
+                'unique',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => 'email',
+                'when' => fn($model) => $model->email !== Yii::$app->user->identity->email,
+            ],
             [
                 'categories',
                 'exist',
