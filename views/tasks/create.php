@@ -41,7 +41,7 @@ AutocompleteAsset::register($this);
             'id' => 'autoComplete',
             'class' => 'location-icon',
             'value' => $userLocalityData['location']
-        ]) ?>
+        ])->hint('Укажите адрес из вашего города либо оставьте поле пустым') ?>
 
     <?= $form->field($createTaskForm, 'city', [
             'template' => '{input}',

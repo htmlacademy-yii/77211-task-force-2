@@ -63,7 +63,8 @@
   transform: scale(0);
 }
 
-.autoComplete_wrapper > ul > li {
+.autoComplete_wrapper > ul > li,
+.autoComplete_wrapper > ul > p {
   margin: 0.3rem;
   padding: 0.3rem 0.5rem;
   text-align: left;
