@@ -29,6 +29,7 @@ git clone git@github.com:bysynth/77211-task-force-2.git taskforce
 
 ```shell
 cd taskforce
+composer install
 make init
 ```
 Для работы с проектом вам необходимо самостоятельно настроить веб-сервер.
