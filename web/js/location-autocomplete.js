@@ -39,6 +39,16 @@ const autoCompleteJS = new autoComplete({
             },
         },
     },
+    resultsList: {
+        element: (list, data) => {
+            const info = document.createElement("p");
+            if (data.results.length === 0) {
+                info.innerHTML = 'Поиск не дал результатов!<br>Поиск доступен только по городу, указанному при регистрации!';
+            }
+            list.prepend(info);
+        },
+        noResults: true,
+    },
     searchEngine: 'loose',
     debounce: 300,
 });

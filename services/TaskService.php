@@ -11,6 +11,8 @@ use app\services\actions\ActionRefuse;
 use app\services\actions\ActionRespond;
 use Yii;
 use yii\base\Exception;
+use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yii\db\StaleObjectException;
 use yii\helpers\Url;
 
@@ -128,5 +130,46 @@ class TaskService
     {
         $task->status = Task::STATUS_CANCELED;
         $task->update();
+    }
+
+    /**
+     * @param User $user
+     * @param string $statusParam
+     * @return ActiveQuery
+     */
+    public function getMyTasks(User $user, string $statusParam): ActiveQuery
+    {
+        $role = $user->role;
+        $query = Task::find();
+
+        switch ($statusParam) {
+            case 'new':
+                $query->andWhere(['status' => Task::STATUS_NEW]);
+                break;
+            case 'processing':
+                $query->andWhere(['status' => Task::STATUS_PROCESSING]);
+                break;
+            case 'overdue':
+                $query->andWhere(['status' => Task::STATUS_PROCESSING]);
+                $query->andWhere(['<', 'deadline_at', new Expression('NOW()')]);
+                break;
+            case 'closed':
+                $query->orWhere(['status' => Task::STATUS_DONE]);
+                $query->orWhere(['status' => Task::STATUS_FAILED]);
+                if ($role === User::ROLE_CUSTOMER) {
+                    $query->orWhere(['status' => Task::STATUS_CANCELED]);
+                }
+                break;
+        }
+
+        if ($role === User::ROLE_CUSTOMER) {
+            $query->AndWhere(['customer_id' => $user->id]);
+        }
+
+        if ($role === User::ROLE_EXECUTOR) {
+            $query->AndWhere(['executor_id' => $user->id]);
+        }
+
+        return $query->with('city', 'category');
     }
 }

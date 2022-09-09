@@ -12,6 +12,9 @@ use yii\web\Response;
 
 class UserController extends Controller
 {
+    /**
+     * @return array[]
+     */
     public function behaviors(): array
     {
         return [
@@ -28,7 +31,6 @@ class UserController extends Controller
         ];
     }
 
-
     /**
      * @param $id
      * @return string
@@ -37,8 +39,9 @@ class UserController extends Controller
     public function actionView($id): string
     {
         $user = User::findOne($id);
+        $currentUser = Yii::$app->user->identity;
 
-        if (!$user) {
+        if (!$user || $user->role === User::ROLE_CUSTOMER) {
             throw new NotFoundHttpException();
         }
 
@@ -51,6 +54,7 @@ class UserController extends Controller
 
         return $this->render('view', [
             'user' => $user,
+            'currentUser' => $currentUser,
             'reviews' => $reviews,
         ]);
     }

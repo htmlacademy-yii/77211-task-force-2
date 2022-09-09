@@ -3,11 +3,13 @@
 /**
  * @var yii\web\View $this
  * @var User $user
+ * @var User $currentUser
  * @var Review[] $reviews
  */
 
 use app\models\Review;
 use app\models\User;
+use app\services\UserService;
 use app\widgets\Stars;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -66,11 +68,13 @@ use yii\helpers\Url;
             <p class="bio-info">
                 <span class="country-info">Россия</span>, <span class="town-info"><?= $user->city->name ?></span>, <span
                         class="age-info">
-                    <?= \Yii::$app->i18n->messageFormatter->format(
-                        '{n, plural, one{# год} few{# года} many{# лет} other{# года}}',
-                        ['n' => $user->age],
-                        \Yii::$app->language
-                    ); ?>
+                    <?php if (!is_null($user->birthdate)): ?>
+                        <?= \Yii::$app->i18n->messageFormatter->format(
+                            '{n, plural, one{# год} few{# года} many{# лет} other{# года}}',
+                            ['n' => $user->age],
+                            \Yii::$app->language
+                        ); ?>
+                    <?php endif; ?>
                 </span>
             </p>
         </div>
@@ -137,24 +141,30 @@ use yii\helpers\Url;
             <dd><?= $user->getUserStatusesList()[$user->status] ?></dd>
         </dl>
     </div>
-    <div class="right-card white">
-        <h4 class="head-card">Контакты</h4>
-        <ul class="enumeration-list">
-            <li class="enumeration-item">
-                <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
-                    <?= Html::encode($user->phone) ?>
-                </a>
-            </li>
-            <li class="enumeration-item">
-                <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email">
-                    <?= Html::encode($user->email) ?>
-                </a>
-            </li>
-            <li class="enumeration-item">
-                <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
-                    <?= Html::encode($user->telegram) ?>
-                </a>
-            </li>
-        </ul>
-    </div>
+    <?php if (UserService::showExecutorContacts($currentUser, $user)): ?>
+        <div class="right-card white">
+            <h4 class="head-card">Контакты</h4>
+            <ul class="enumeration-list">
+                <?php if (!is_null($user->phone)): ?>
+                    <li class="enumeration-item">
+                        <a href="tel:<?= Html::encode($user->phone) ?>" class="link link--block link--phone">
+                            <?= Html::encode($user->phone) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+                <li class="enumeration-item">
+                    <a href="mailto:<?= Html::encode($user->email) ?>" class="link link--block link--email">
+                        <?= Html::encode($user->email) ?>
+                    </a>
+                </li>
+                <?php if (!is_null($user->telegram)): ?>
+                    <li class="enumeration-item">
+                        <a href="https://t.me/<?= Html::encode($user->telegram) ?>" class="link link--block link--tg">
+                            @<?= Html::encode($user->telegram) ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 </div>

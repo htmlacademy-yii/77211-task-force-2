@@ -7,3 +7,8 @@ seed:
 auth:
 	php yii migrate --migrationPath=@yii/rbac/migrations --interactive=0
 	php yii rbac/init
+
+init:
+	make migrate
+	make seed
+	make auth

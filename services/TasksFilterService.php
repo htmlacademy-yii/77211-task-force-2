@@ -5,6 +5,7 @@ namespace app\services;
 use app\models\Response;
 use app\models\Task;
 use app\models\TasksFilterForm;
+use Yii;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
@@ -18,6 +19,7 @@ class TasksFilterService
     {
         $query = Task::find()
             ->where(['status' => Task::STATUS_NEW])
+            ->andWhere(['or', ['city_id' => Yii::$app->user->identity->city_id], ['city_id' => null]])
             ->with('city', 'category');
 
         if (!is_null($form->categories)) {

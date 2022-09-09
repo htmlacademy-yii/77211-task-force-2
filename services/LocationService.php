@@ -21,6 +21,7 @@ class LocationService
     {
         $apiKey = Yii::$app->params['geocoderApiKey'];
         $apiUri = 'https://geocode-maps.yandex.ru/1.x';
+        $userCity = Yii::$app->user->identity->city->name;
         $result = [];
         $client = new Client();
 
@@ -45,7 +46,7 @@ class LocationService
             $result = [];
         }
 
-        return $result;
+        return array_values(array_filter($result, fn($item) => $item['city'] === $userCity));
     }
 
     /**

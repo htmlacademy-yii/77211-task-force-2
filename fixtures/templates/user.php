@@ -4,8 +4,6 @@
  * @var $faker \Faker\Generator
  */
 
-$citiesCount = 1087;
-
 return [
     'email' => $faker->unique()->email(),
     'password' => '$2y$13$InYtC5CneFnBnwdvVvtCPe/utVDGd4LmGmPJ/2NxYfj5nl0WkPDvS', // secret
@@ -14,9 +12,9 @@ return [
     'info' => $faker->text(),
     'avatar_file_id' => $faker->unique()->numberBetween(1, 10),
     'rating' => $faker->randomFloat(2, 0, 5),
-    'city_id' => $faker->numberBetween(1, $citiesCount),
-    'phone' => $faker->e164PhoneNumber(),
-    'telegram' => "@{$faker->userName()}",
+    'city_id' => 178,
+    'phone' => '12345678910',
+    'telegram' => $faker->userName(),
     'role' => $faker->numberBetween(0, 1),
     'status' => $faker->numberBetween(0, 1),
     'created_at' => $faker->dateTimeBetween('-1 week', 'now')->format('Y-m-d H:i:s'),

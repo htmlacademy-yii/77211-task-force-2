@@ -1,5 +1,7 @@
 web/uploads/tasks/*
+web/uploads/avatars/*
 !web/uploads/tasks/.gitkeep
+!web/uploads/avatars/.gitkeep
 
 # phpstorm project files
 .idea
