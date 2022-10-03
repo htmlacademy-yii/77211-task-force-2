@@ -79,8 +79,14 @@ class TasksController extends Controller
         $filterForm = new TasksFilterForm();
         $filterForm->load(Yii::$app->request->get());
 
+        $filterQuery = $tasksFilterService::getDefaultQuery();
+
+        if ($filterForm->validate()) {
+            $filterQuery = $tasksFilterService->filter($filterForm);
+        }
+
         $tasksDataProvider = new ActiveDataProvider([
-            'query' => $tasksFilterService->filter($filterForm),
+            'query' => $filterQuery,
             'pagination' => [
                 'pageSize' => 5,
                 'forcePageParam' => false,

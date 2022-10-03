@@ -8,6 +8,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class MyTasksController extends Controller
 {
@@ -39,7 +40,6 @@ class MyTasksController extends Controller
         $taskService = new TaskService();
         $user = Yii::$app->user->identity;
 
-        $statusParam = Yii::$app->request->get('status');
         $titlesList = [
             'new' => 'Новые задания',
             'processing' => 'Задания в процессе',
@@ -47,12 +47,18 @@ class MyTasksController extends Controller
             'closed' => 'Закрытые задания',
         ];
 
+        $statusParam = Yii::$app->request->get('status');
+
         if ($user->role === User::ROLE_CUSTOMER) {
             $statusParam = $statusParam ?? 'new';
         }
 
         if ($user->role === User::ROLE_EXECUTOR) {
             $statusParam = $statusParam ?? 'processing';
+        }
+
+        if (!array_key_exists($statusParam, $titlesList)) {
+            throw new NotFoundHttpException();
         }
 
         $tasksDataProvider = new ActiveDataProvider([

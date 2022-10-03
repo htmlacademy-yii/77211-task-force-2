@@ -31,7 +31,7 @@ class CreateResponseForm extends Model
             [['task_id', 'comment', 'budget'], 'required'],
             [['task_id', 'budget'], 'integer'],
             [['comment'], 'string'],
-            [['budget'], 'integer', 'min' => 1],
+            [['budget'], 'integer', 'min' => 1, 'max' => 100000],
             [
                 ['task_id'],
                 'exist',

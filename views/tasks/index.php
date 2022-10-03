@@ -38,11 +38,12 @@ use yii\widgets\ListView;
                     'tag' => 'div',
                     'class' => 'checkbox-wrapper',
                     'id' => false,
-                    'itemOptions' => [
-                        'labelOptions' => [
-                            'class' => 'control-label',
-                        ]
-                    ],
+                    'item' => function ($index, $label, $name, $checked, $value) use ($filterForm) {
+                        $checked = in_array($value, $filterForm->categories) ? 'checked' : '';
+                        $inputTag = "<input type='checkbox' name='$name' value='$value' $checked>";
+
+                        return "<label class='control-label'>{$inputTag}{$label}</label>";
+                    },
                     'unselect' => null,
                 ])
                 ->label(false) ?>

@@ -145,6 +145,11 @@ class UserService
         $user->update();
     }
 
+    /**
+     * @param User $currentUser
+     * @param User $user
+     * @return bool
+     */
     public static function showExecutorContacts(User $currentUser, User $user): bool
     {
         if ($user->show_only_customer === 0) {
