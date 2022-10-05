@@ -37,6 +37,7 @@ class Response extends ActiveRecord
         return [
             [['task_id', 'executor_id'], 'required'],
             [['task_id', 'executor_id', 'budget', 'is_refused'], 'integer'],
+            [['budget'], 'integer', 'min' => 1, 'max' => 100000],
             [['comment'], 'string'],
             [['created_at'], 'safe'],
             [
