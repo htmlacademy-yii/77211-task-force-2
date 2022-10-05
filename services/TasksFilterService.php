@@ -12,27 +12,35 @@ use yii\helpers\ArrayHelper;
 class TasksFilterService
 {
     /**
+     * @return ActiveQuery
+     */
+    public static function getDefaultQuery(): ActiveQuery
+    {
+        return Task::find()
+            ->where(['status' => Task::STATUS_NEW])
+            ->andWhere(['or', ['city_id' => Yii::$app->user->identity->city_id], ['city_id' => null]])
+            ->with('city', 'category');
+    }
+
+    /**
      * @param TasksFilterForm $form
      * @return ActiveQuery
      */
     public function filter(TasksFilterForm $form): ActiveQuery
     {
-        $query = Task::find()
-            ->where(['status' => Task::STATUS_NEW])
-            ->andWhere(['or', ['city_id' => Yii::$app->user->identity->city_id], ['city_id' => null]])
-            ->with('city', 'category');
+        $query = self::getDefaultQuery();
 
-        if (!is_null($form->categories)) {
+        if (!empty($form->categories)) {
             $query->andWhere(['category_id' => $form->categories]);
+        }
+
+        if (!is_null($form->remote)) {
+            $query->andWhere(['city_id' => null]);
         }
 
         if (!is_null($form->withoutResponse)) {
             $taskIdsWithResponses = ArrayHelper::getColumn(Response::find()->asArray()->all(), 'task_id');
             $query->andWhere(['not in', 'id', $taskIdsWithResponses]);
-        }
-
-        if (!is_null($form->remote)) {
-            $query->andWhere(['city_id' => null]);
         }
 
         if ((int) $form->period !== 0) {

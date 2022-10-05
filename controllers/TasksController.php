@@ -6,21 +6,23 @@ use app\models\Category;
 use app\models\CreateResponseForm;
 use app\models\CreateReviewForm;
 use app\models\CreateTaskForm;
+use app\models\Task;
+use app\models\TasksFilterForm;
+use app\services\FileService;
 use app\services\LocationService;
 use app\services\ResponseService;
 use app\services\TaskService;
-use app\services\FileService;
-use yii\base\Exception;
-use yii\db\StaleObjectException;
-use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\web\Response as WebResponse;
-use app\models\Task;
-use app\models\TasksFilterForm;
 use app\services\TasksFilterService;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
+use yii\db\StaleObjectException;
+use yii\filters\AccessControl;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 
@@ -42,7 +44,7 @@ class TasksController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create'],
+                        'actions' => ['create', 'store', 'task-form-ajax-validate'],
                         'roles' => ['customer'],
                     ],
                     [
@@ -79,8 +81,14 @@ class TasksController extends Controller
         $filterForm = new TasksFilterForm();
         $filterForm->load(Yii::$app->request->get());
 
+        $filterQuery = $tasksFilterService::getDefaultQuery();
+
+        if ($filterForm->validate()) {
+            $filterQuery = $tasksFilterService->filter($filterForm);
+        }
+
         $tasksDataProvider = new ActiveDataProvider([
-            'query' => $tasksFilterService->filter($filterForm),
+            'query' => $filterQuery,
             'pagination' => [
                 'pageSize' => 5,
                 'forcePageParam' => false,
@@ -108,7 +116,6 @@ class TasksController extends Controller
      */
     public function actionView(int $id): string
     {
-
         $task = Task::findOne($id);
 
         if (!$task) {
@@ -151,17 +158,14 @@ class TasksController extends Controller
     }
 
     /**
-     * @return array|string|WebResponse
-     * @throws Exception
+     * @return string
      */
-    public function actionCreate(): WebResponse|array|string
+    public function actionCreate(): string
     {
         $this->view->title = 'Cоздать задание :: Taskforce';
 
         $user = Yii::$app->user->identity;
         $locationService = new LocationService();
-        $taskService = new TaskService();
-        $fileService = new FileService();
         $categoriesList = Category::getCategoriesList();
         $createTaskForm = new CreateTaskForm();
         $userLocalityData = [
@@ -171,15 +175,26 @@ class TasksController extends Controller
             'coordinates' => $locationService->getUsersCityCoordinates(),
         ];
 
+        return $this->render('create', [
+            'createTaskForm' => $createTaskForm,
+            'categoriesList' => $categoriesList,
+            'userLocalityData' => $userLocalityData,
+        ]);
+    }
+
+    /**
+     * @return Response
+     * @throws Exception
+     * @throws ServerErrorHttpException
+     */
+    public function actionStore(): Response
+    {
+        $createTaskForm = new CreateTaskForm();
+        $taskService = new TaskService();
+        $fileService = new FileService();
+
         if (Yii::$app->request->getIsPost()) {
-            $createTaskForm->load(Yii::$app->request->post());
-
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = WebResponse::FORMAT_JSON;
-                return ActiveForm::validate($createTaskForm);
-            }
-
-            if ($createTaskForm->validate()) {
+            if ($createTaskForm->load(Yii::$app->request->post()) && $createTaskForm->validate()) {
                 $task = $taskService->createTask($createTaskForm);
 
                 $uploadedFiles = UploadedFile::getInstances($createTaskForm, 'files');
@@ -195,22 +210,34 @@ class TasksController extends Controller
             }
         }
 
-        return $this->render('create', [
-            'createTaskForm' => $createTaskForm,
-            'categoriesList' => $categoriesList,
-            'userLocalityData' => $userLocalityData,
-        ]);
+        throw new ServerErrorHttpException('Невозможно создать задание');
     }
 
+    /**
+     * @return array
+     * @throws BadRequestHttpException
+     */
+    public function actionTaskFormAjaxValidate(): array
+    {
+        if (!Yii::$app->request->getIsPost() || !Yii::$app->request->isAjax) {
+            throw new BadRequestHttpException();
+        }
+
+        $createTaskForm = new CreateTaskForm();
+        $createTaskForm->load(Yii::$app->request->post());
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return ActiveForm::validate($createTaskForm);
+    }
 
     /**
      * @param int $id
-     * @return WebResponse
+     * @return Response
      * @throws NotFoundHttpException
      * @throws StaleObjectException
      * @throws \yii\db\Exception
      */
-    public function actionRefuse(int $id): WebResponse
+    public function actionRefuse(int $id): Response
     {
         $task = Task::findOne($id);
 
@@ -226,11 +253,11 @@ class TasksController extends Controller
 
     /**
      * @param int $id
-     * @return WebResponse
+     * @return Response
      * @throws NotFoundHttpException
      * @throws StaleObjectException
      */
-    public function actionCancel(int $id): WebResponse
+    public function actionCancel(int $id): Response
     {
         $task = Task::findOne($id);
 

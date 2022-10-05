@@ -11,8 +11,10 @@ use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response as WebResponse;
+use yii\web\ServerErrorHttpException;
 
 class ResponseController extends SecuredController
 {
@@ -55,9 +57,10 @@ class ResponseController extends SecuredController
     }
 
     /**
-     * @return WebResponse|bool
+     * @return WebResponse
+     * @throws ServerErrorHttpException
      */
-    public function actionCreate(): WebResponse|bool
+    public function actionCreate(): WebResponse
     {
         $responseForm = new CreateResponseForm();
         $responseService = new ResponseService();
@@ -69,12 +72,11 @@ class ResponseController extends SecuredController
 
             if ($user->role === User::ROLE_EXECUTOR && !$isUserMadeResponse) {
                 $response = $responseService->createResponse($responseForm, $user);
-
                 return $this->redirect(['tasks/view', 'id' => $response->task_id]);
             }
         }
 
-        return false;
+        throw new ServerErrorHttpException('Невозможно создать отклик');
     }
 
     /**

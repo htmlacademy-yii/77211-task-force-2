@@ -59,7 +59,7 @@ class CreateTaskForm extends Model
             [['title'], 'string', 'length' => [10, 255]],
             [['description'], 'string', 'min' => 30],
             [['budget'], 'default', 'value' => null],
-            [['budget'], 'integer', 'min' => 1],
+            [['budget'], 'integer', 'min' => 1, 'max' => 100000],
             [['deadline_at'], 'default', 'value' => null],
             [
                 ['location'],
@@ -84,7 +84,12 @@ class CreateTaskForm extends Model
         ];
     }
 
-    public function showLocationErrorMessage($attribute, $params)
+    /**
+     * @param $attribute
+     * @param $params
+     * @return void
+     */
+    public function showLocationErrorMessage($attribute, $params): void
     {
         $this->addError($attribute, 'Вы можете указывать только адрес в рамках города, указанного при регистрации!');
     }

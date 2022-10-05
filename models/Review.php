@@ -36,6 +36,7 @@ class Review extends ActiveRecord
         return [
             [['task_id', 'author_id', 'user_id', 'rate'], 'required'],
             [['task_id', 'author_id', 'user_id', 'rate'], 'integer'],
+            [['rate'], 'integer', 'min' => 1, 'max' => 5],
             [['comment'], 'string'],
             [['created_at'], 'safe'],
             [

@@ -12,6 +12,10 @@ class VkService
     public string $source;
     public string $sourceId;
 
+    /**
+     * @param string $source
+     * @param int $sourceId
+     */
     public function __construct(string $source, int $sourceId)
     {
         $this->source = $source;

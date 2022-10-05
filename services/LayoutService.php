@@ -4,6 +4,10 @@ namespace app\services;
 
 class LayoutService
 {
+    /**
+     * @param string $route
+     * @return string
+     */
     public static function addClassToMainSection(string $route): string
     {
         $classMap = [
@@ -13,5 +17,14 @@ class LayoutService
         ];
 
         return $classMap[$route] ?? '';
+    }
+
+    /**
+     * @param string $controllerId
+     * @return bool
+     */
+    public static function showNavigation(string $controllerId): bool
+    {
+        return $controllerId !== 'registration' && !\Yii::$app->user->isGuest;
     }
 }

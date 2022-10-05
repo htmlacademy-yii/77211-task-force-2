@@ -56,6 +56,8 @@ class Task extends ActiveRecord
         return [
             [['customer_id', 'title', 'category_id'], 'required'],
             [['customer_id', 'executor_id', 'status', 'category_id', 'budget', 'city_id'], 'integer'],
+            [['budget'], 'default', 'value' => null],
+            [['budget'], 'integer', 'min' => 1, 'max' => 100000],
             [['description', 'address', 'coordinates'], 'string'],
             [['created_at', 'deadline_at'], 'safe'],
             [['title'], 'string', 'max' => 255],

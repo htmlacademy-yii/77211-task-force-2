@@ -6,14 +6,14 @@ use yii\base\Model;
 
 class TasksFilterForm extends Model
 {
-    public ?array $categories = null;
-    public ?string $withoutResponse = null;
+    public array $categories = [];
     public ?string $remote = null;
+    public ?string $withoutResponse = null;
     public string $period = '0';
 
-    public function formName()
+    public function formName(): string
     {
-        return '';
+        return 'filter';
     }
 
     public function attributeLabels(): array
@@ -27,7 +27,17 @@ class TasksFilterForm extends Model
     public function rules(): array
     {
         return [
-            [['categories', 'remote', 'withoutResponse', 'period'], 'safe']
+            [
+                ['categories'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Category::class,
+                'targetAttribute' => 'id',
+                'allowArray' => true
+            ],
+            [['remote'], 'boolean'],
+            [['withoutResponse'], 'boolean'],
+            [['period'], 'integer', 'min' => 0, 'max' => 24],
         ];
     }
 }
