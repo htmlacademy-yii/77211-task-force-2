@@ -32,6 +32,7 @@ class MyTasksController extends Controller
 
     /**
      * @return string
+     * @throws NotFoundHttpException
      */
     public function actionIndex(): string
     {

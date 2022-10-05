@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use app\models\LoginForm;
 use Yii;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
 use yii\widgets\ActiveForm;
 
 class LandingController extends SecuredController
@@ -12,30 +14,54 @@ class LandingController extends SecuredController
     public $layout = 'landing';
 
     /**
-     * @return string|array|Response
+     * @return string
      */
-    public function actionIndex(): string|array|Response
+    public function actionIndex(): string
     {
         $this->view->title = 'Главная страница :: Taskforce';
 
         $loginForm = new LoginForm();
 
-        if (Yii::$app->request->getIsPost()) {
-            $loginForm->load(Yii::$app->request->post());
+        return $this->render('index', compact('loginForm'));
+    }
 
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($loginForm);
-            }
+    /**
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function actionLogin(): Response
+    {
+        $loginForm = new LoginForm();
 
-            if ($loginForm->validate()) {
-                $user = $loginForm->getUser();
-                Yii::$app->user->login($user);
-
-                return $this->redirect(['tasks/index']);
-            }
+        if (!Yii::$app->request->getIsPost()) {
+            throw new BadRequestHttpException();
         }
 
-        return $this->render('index', compact('loginForm'));
+        if ($loginForm->load(Yii::$app->request->post()) && $loginForm->validate()) {
+            $user = $loginForm->getUser();
+            Yii::$app->user->login($user);
+
+            return $this->redirect(['tasks/index']);
+        }
+
+        throw new ServerErrorHttpException('Невозможно произвести аутентификацию пользователя');
+    }
+
+    /**
+     * @return array
+     * @throws BadRequestHttpException
+     */
+    public function actionLoginFormAjaxValidate(): array
+    {
+        if (!Yii::$app->request->getIsPost() || !Yii::$app->request->isAjax) {
+            throw new BadRequestHttpException();
+        }
+
+        $loginForm = new LoginForm();
+        $loginForm->load(Yii::$app->request->post());
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return ActiveForm::validate($loginForm);
     }
 }
