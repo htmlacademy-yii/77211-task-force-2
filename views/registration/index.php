@@ -10,7 +10,6 @@
 use app\models\City;
 use app\models\RegistrationForm;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 ?>
@@ -18,7 +17,6 @@ use yii\widgets\ActiveForm;
 <div class="center-block">
     <div class="registration-form regular-form">
         <?php $form = ActiveForm::begin([
-            'action' => Url::to(['registration/store']),
             'fieldConfig' => [
                 'errorOptions' => [
                     'tag' => 'span',
