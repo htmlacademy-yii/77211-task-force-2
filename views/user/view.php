@@ -53,7 +53,7 @@ use yii\helpers\Url;
                 <ul class="special-list">
                     <?php foreach ($categories as $category): ?>
                         <li class="special-item">
-                            <a href="<?= Url::to(['tasks/index', 'filter[categories][]' => $category->id]) ?>" class="link link--regular">
+                            <a href="<?= Url::to(['tasks/index', 'categories[]' => $category->id]) ?>" class="link link--regular">
                                 <?= $category->name ?>
                             </a>
                         </li>

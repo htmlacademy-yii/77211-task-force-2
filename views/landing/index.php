@@ -175,8 +175,6 @@ use yii\widgets\ActiveForm;
     <h2>Вход на сайт</h2>
 
     <?php $form = ActiveForm::begin([
-        'action' => Url::to(['landing/login']),
-        'validationUrl' => Url::to(['landing/login-form-ajax-validate']),
         'enableAjaxValidation' => true,
         'fieldConfig' => [
             'labelOptions' => [

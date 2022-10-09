@@ -9,15 +9,10 @@ use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
-
-use yii\web\Response;
-use yii\web\ServerErrorHttpException;
+use yii\web\Response as WebResponse;
 
 class ReviewController extends SecuredController
 {
-    /**
-     * @return array[]
-     */
     public function behaviors(): array
     {
         return [
@@ -38,12 +33,11 @@ class ReviewController extends SecuredController
     }
 
     /**
-     * @return Response
-     * @throws Exception
-     * @throws ServerErrorHttpException
+     * @return WebResponse|bool
      * @throws StaleObjectException
+     * @throws Exception
      */
-    public function actionCreate(): Response
+    public function actionCreate(): WebResponse|bool
     {
         $reviewForm = new CreateReviewForm();
         $customer = Yii::$app->user->identity;
@@ -59,6 +53,6 @@ class ReviewController extends SecuredController
             }
         }
 
-        throw new ServerErrorHttpException('Невозможно создать отзыв');
+        return false;
     }
 }

@@ -107,7 +107,7 @@ $this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
         <dl class="black-list">
             <dt>Категория</dt>
             <dd>
-                <a href="<?= Url::to(['tasks/index', 'filter[categories][]' => $task->category->id]) ?>"><?= $task->category->name ?></a>
+                <a href="<?= Url::to(['tasks/index', 'categories[]' => $task->category->id]) ?>"><?= $task->category->name ?></a>
             </dd>
             <dt>Дата публикации</dt>
             <dd><?= Yii::$app->formatter->asRelativeTime($task->created_at) ?></dd>
