@@ -9,7 +9,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions(): array
+    public function actions()
     {
         return [
             'error' => [

@@ -17,6 +17,7 @@ use yii\widgets\ActiveForm;
 <div class="center-block">
     <div class="registration-form regular-form">
         <?php $form = ActiveForm::begin([
+            'enableAjaxValidation' => true,
             'fieldConfig' => [
                 'errorOptions' => [
                     'tag' => 'span',

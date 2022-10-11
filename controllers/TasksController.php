@@ -14,7 +14,7 @@ use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response as WebResponse;
+use yii\web\Response;
 use app\models\Task;
 use app\models\TasksFilterForm;
 use app\services\TasksFilterService;
@@ -29,7 +29,7 @@ class TasksController extends Controller
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -69,7 +69,7 @@ class TasksController extends Controller
     /**
      * @return string
      */
-    public function actionIndex(): string
+    public function actionIndex()
     {
         $this->view->title = 'Новые задания :: Taskforce';
 
@@ -112,7 +112,7 @@ class TasksController extends Controller
      * @throws NotFoundHttpException
      * @throws Exception
      */
-    public function actionView(int $id): string
+    public function actionView(int $id)
     {
 
         $task = Task::findOne($id);
@@ -157,10 +157,10 @@ class TasksController extends Controller
     }
 
     /**
-     * @return array|string|WebResponse
+     * @return array|string|Response
      * @throws Exception
      */
-    public function actionCreate(): WebResponse|array|string
+    public function actionCreate()
     {
         $this->view->title = 'Cоздать задание :: Taskforce';
 
@@ -181,7 +181,7 @@ class TasksController extends Controller
             $createTaskForm->load(Yii::$app->request->post());
 
             if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = WebResponse::FORMAT_JSON;
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($createTaskForm);
             }
 
@@ -208,15 +208,14 @@ class TasksController extends Controller
         ]);
     }
 
-
     /**
      * @param int $id
-     * @return WebResponse
+     * @return Response
      * @throws NotFoundHttpException
      * @throws StaleObjectException
      * @throws \yii\db\Exception
      */
-    public function actionRefuse(int $id): WebResponse
+    public function actionRefuse(int $id)
     {
         $task = Task::findOne($id);
 
@@ -232,11 +231,11 @@ class TasksController extends Controller
 
     /**
      * @param int $id
-     * @return WebResponse
+     * @return Response
      * @throws NotFoundHttpException
      * @throws StaleObjectException
      */
-    public function actionCancel(int $id): WebResponse
+    public function actionCancel(int $id)
     {
         $task = Task::findOne($id);
 

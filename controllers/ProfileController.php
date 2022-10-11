@@ -23,7 +23,7 @@ class ProfileController extends Controller
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -44,7 +44,7 @@ class ProfileController extends Controller
      * @throws StaleObjectException
      * @throws \yii\db\Exception
      */
-    public function actionIndex(): Response|array|string
+    public function actionIndex()
     {
         $this->view->title = 'Настройки профиля :: Taskforce';
 
@@ -98,7 +98,7 @@ class ProfileController extends Controller
      * @throws Exception
      * @throws StaleObjectException
      */
-    public function actionSecurity(): Response|array|string
+    public function actionSecurity()
     {
         $this->view->title = 'Настройки безопасности :: Taskforce';
 

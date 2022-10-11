@@ -15,7 +15,7 @@ class UserController extends Controller
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -36,7 +36,7 @@ class UserController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id): string
+    public function actionView($id)
     {
         $user = User::findOne($id);
         $currentUser = Yii::$app->user->identity;
@@ -62,7 +62,7 @@ class UserController extends Controller
     /**
      * @return Response
      */
-    public function actionLogout(): Response
+    public function actionLogout()
     {
         Yii::$app->user->logout();
 

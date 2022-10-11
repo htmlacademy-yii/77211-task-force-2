@@ -14,7 +14,7 @@ class LandingController extends SecuredController
     /**
      * @return string|array|Response
      */
-    public function actionIndex(): string|array|Response
+    public function actionIndex()
     {
         $this->view->title = 'Главная страница :: Taskforce';
 
