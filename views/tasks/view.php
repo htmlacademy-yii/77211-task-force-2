@@ -159,6 +159,7 @@ $this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
         <div class="completion-form pop-up--form regular-form">
             <?php $form = ActiveForm::begin([
                 'action' => ['review/create'],
+                'enableAjaxValidation' => true,
             ]) ?>
 
             <?= $form->field($reviewForm, 'task_id', [
@@ -187,11 +188,8 @@ $this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
             <p class="completion-head control-label">Оценка работы</p>
             <div class="stars-rating big active-stars"><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span><span>&nbsp;</span></div>
             <?= $form->field($reviewForm, 'rate',[
-                'template' => '{input}',
-                'options' => [
-                    'tag' => false
-                ],
-            ])->hiddenInput(['value' => '']) ?>
+                'template' => '{input}{error}',
+            ])->hiddenInput(['value' => '0']) ?>
 
             <?= Html::submitInput('Завершить', ['class' => 'button button--pop-up button--blue']) ?>
             <?php ActiveForm::end() ?>
@@ -211,6 +209,7 @@ $this->registerJsFile('@web/js/map.js', ['position' => View::POS_END]);
         <div class="addition-form pop-up--form regular-form">
             <?php $form = ActiveForm::begin([
                 'action' => ['response/create'],
+                'enableAjaxValidation' => true,
             ]) ?>
                 <?= $form->field($responseForm, 'task_id', [
                     'template' => '{input}',

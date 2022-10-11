@@ -10,7 +10,7 @@ abstract class SecuredController extends Controller
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [

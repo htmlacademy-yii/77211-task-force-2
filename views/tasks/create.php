@@ -12,7 +12,6 @@ use app\assets\AutocompleteAsset;
 use app\models\Category;
 use app\models\CreateTaskForm;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 AutocompleteAsset::register($this);
@@ -20,8 +19,6 @@ AutocompleteAsset::register($this);
 
 <div class="add-task-form regular-form">
     <?php $form = ActiveForm::begin([
-        'action' => Url::to(['tasks/store']),
-        'validationUrl' => Url::to(['tasks/task-form-ajax-validate']),
         'fieldConfig' => [
             'errorOptions' => [
                 'tag' => 'span',

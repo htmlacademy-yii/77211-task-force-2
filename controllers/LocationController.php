@@ -11,7 +11,10 @@ use yii\web\Response;
 
 class LocationController extends Controller
 {
-    public function behaviors(): array
+    /**
+     * @return array[]
+     */
+    public function behaviors()
     {
         return [
             'access' => [
@@ -32,7 +35,7 @@ class LocationController extends Controller
      * @return array
      * @throws Exception
      */
-    public function actionGeocode(string $geocode): array
+    public function actionGeocode(string $geocode)
     {
         $locationService = new LocationService();
         Yii::$app->response->format = Response::FORMAT_JSON;

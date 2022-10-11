@@ -11,7 +11,6 @@
 use app\models\SecurityForm;
 use app\models\User;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 ?>
@@ -22,8 +21,6 @@ use yii\widgets\ActiveForm;
 <div class="my-profile-form">
     <h3 class="head-main head-regular">Безопасность</h3>
     <?php $form = ActiveForm::begin([
-        'action' => Url::to(['profile/update-security']),
-        'validationUrl' => Url::to(['profile/security-form-ajax-validate']),
         'fieldConfig' => [
             'errorOptions' => [
                 'tag' => 'span',

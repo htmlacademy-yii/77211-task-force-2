@@ -15,7 +15,7 @@ class MyTasksController extends Controller
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -34,7 +34,7 @@ class MyTasksController extends Controller
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionIndex(): string
+    public function actionIndex()
     {
         $this->view->title = 'Мои задания :: Taskforce';
 

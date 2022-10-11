@@ -7,7 +7,7 @@ class CreateReviewForm extends \yii\base\Model
     public ?int $task_id = null;
     public ?int $author_id = null;
     public ?int $user_id = null;
-    public ?int $rate = null;
+    public ?string $rate = null;
     public string $comment = '';
 
     /**
@@ -32,7 +32,14 @@ class CreateReviewForm extends \yii\base\Model
         return [
             [['task_id', 'author_id', 'user_id', 'rate', 'comment'], 'required'],
             [['task_id', 'author_id', 'user_id', 'rate'], 'integer'],
-            [['rate'], 'integer', 'min' => 1, 'max' => 5],
+            [
+                ['rate'],
+                'integer',
+                'min' => 1,
+                'max' => 5,
+                'tooSmall' => 'Оценка работа должна быть не меньше 1 звезды',
+                'tooBig' => 'Оценка работы должна быть не больше 5 звезд'
+            ],
             [['comment'], 'string'],
             [
                 ['task_id'],

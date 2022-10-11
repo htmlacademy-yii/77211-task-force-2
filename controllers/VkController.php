@@ -15,7 +15,7 @@ class VkController extends SecuredController
     /**
      * @return array[]
      */
-    public function actions(): array
+    public function actions()
     {
         return [
             'auth' => [
@@ -30,7 +30,7 @@ class VkController extends SecuredController
      * @return Response
      * @throws Exception
      */
-    public function onAuthSuccess($client): Response
+    public function onAuthSuccess($client)
     {
         $attributes = $client->getUserAttributes();
         $source = $client->getId();

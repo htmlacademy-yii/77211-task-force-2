@@ -11,17 +11,17 @@ use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
-use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response as WebResponse;
-use yii\web\ServerErrorHttpException;
+use yii\widgets\ActiveForm;
 
-class ResponseController extends SecuredController
+class ResponseController extends Controller
 {
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -32,7 +32,7 @@ class ResponseController extends SecuredController
                         'actions' => ['create'],
                         'roles' => ['executorCanCreateResponse'],
                         'roleParams' => fn($rule) => [
-                            'task' => Task::findOne(Yii::$app->request->post('CreateResponseForm')['task_id'])
+                            'task' => Task::findOne(Yii::$app->request->post('CreateResponseForm')['task_id'] ?? null)
                         ],
                     ],
                     [
@@ -40,7 +40,7 @@ class ResponseController extends SecuredController
                         'actions' => ['accept'],
                         'roles' => ['customerCanAcceptResponse'],
                         'roleParams' => fn($rule) => [
-                            'task' => (Response::findOne(Yii::$app->request->get('id'))->task)
+                            'task' => Response::findOne(Yii::$app->request->get('id'))->task ?? null
                         ]
                     ],
                     [
@@ -48,7 +48,7 @@ class ResponseController extends SecuredController
                         'actions' => ['refuse'],
                         'roles' => ['customerCanRefuseResponse'],
                         'roleParams' => fn($rule) => [
-                            'task' => (Response::findOne(Yii::$app->request->get('id'))->task)
+                            'task' => Response::findOne(Yii::$app->request->get('id'))->task ?? null
                         ]
                     ],
                 ],
@@ -57,26 +57,34 @@ class ResponseController extends SecuredController
     }
 
     /**
-     * @return WebResponse
-     * @throws ServerErrorHttpException
+     * @return array|WebResponse
      */
-    public function actionCreate(): WebResponse
+    public function actionCreate()
     {
         $responseForm = new CreateResponseForm();
         $responseService = new ResponseService();
         $user = Yii::$app->user->identity;
 
-        if ($responseForm->load(Yii::$app->request->post()) && $responseForm->validate()) {
+        if (Yii::$app->request->getIsPost()) {
+            $responseForm->load(Yii::$app->request->post());
 
-            $isUserMadeResponse = $responseService->checkIsUserMadeResponseForTask($user->id, $responseForm->task_id);
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = WebResponse::FORMAT_JSON;
+                return ActiveForm::validate($responseForm);
+            }
 
-            if ($user->role === User::ROLE_EXECUTOR && !$isUserMadeResponse) {
-                $response = $responseService->createResponse($responseForm, $user);
-                return $this->redirect(['tasks/view', 'id' => $response->task_id]);
+            if ($responseForm->validate()) {
+                $isUserMadeResponse = $responseService->checkIsUserMadeResponseForTask($user->id, $responseForm->task_id);
+
+                if ($user->role === User::ROLE_EXECUTOR && !$isUserMadeResponse) {
+                    $response = $responseService->createResponse($responseForm, $user);
+
+                    return $this->redirect(['tasks/view', 'id' => $response->task_id]);
+                }
             }
         }
 
-        throw new ServerErrorHttpException('Невозможно создать отклик');
+        return $this->goBack();
     }
 
     /**
@@ -86,7 +94,7 @@ class ResponseController extends SecuredController
      * @throws StaleObjectException
      * @throws Exception
      */
-    public function actionAccept(int $id): WebResponse
+    public function actionAccept(int $id)
     {
         $response = Response::findOne($id);
 
@@ -111,7 +119,7 @@ class ResponseController extends SecuredController
      * @throws NotFoundHttpException
      * @throws StaleObjectException
      */
-    public function actionRefuse(int $id): WebResponse
+    public function actionRefuse(int $id)
     {
         $response = Response::findOne($id);
 

@@ -9,16 +9,16 @@ use Yii;
 use yii\db\Exception;
 use yii\db\StaleObjectException;
 use yii\filters\AccessControl;
-
+use yii\web\Controller;
 use yii\web\Response;
-use yii\web\ServerErrorHttpException;
+use yii\widgets\ActiveForm;
 
-class ReviewController extends SecuredController
+class ReviewController extends Controller
 {
     /**
      * @return array[]
      */
-    public function behaviors(): array
+    public function behaviors()
     {
         return [
             'access' => [
@@ -29,7 +29,7 @@ class ReviewController extends SecuredController
                         'actions' => ['create'],
                         'roles' => ['customerCanCreateReview'],
                         'roleParams' => fn($rule) => [
-                            'task' => Task::findOne(Yii::$app->request->post('CreateReviewForm')['task_id'])
+                            'task' => Task::findOne(Yii::$app->request->post('CreateReviewForm')['task_id'] ?? null)
                         ],
                     ],
                 ],
@@ -38,27 +38,34 @@ class ReviewController extends SecuredController
     }
 
     /**
-     * @return Response
+     * @return array|Response
      * @throws Exception
-     * @throws ServerErrorHttpException
      * @throws StaleObjectException
      */
-    public function actionCreate(): Response
+    public function actionCreate()
     {
         $reviewForm = new CreateReviewForm();
-        $customer = Yii::$app->user->identity;
         $reviewService = new ReviewService();
+        $customer = Yii::$app->user->identity;
 
-        if ($reviewForm->load(Yii::$app->request->post()) && $reviewForm->validate()) {
+        if (Yii::$app->request->getIsPost()) {
+            $reviewForm->load(Yii::$app->request->post());
 
-            $task = Task::findOne($reviewForm->task_id);
+            if (Yii::$app->request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($reviewForm);
+            }
 
-            if ($customer->id === $task->customer_id) {
-                $review = $reviewService->createReview($reviewForm, $task);
-                return $this->redirect(['tasks/view', 'id' => $review->task_id]);
+            if ($reviewForm->validate()) {
+                $task = Task::findOne($reviewForm->task_id);
+
+                if ($customer->id === $task->customer_id) {
+                    $review = $reviewService->createReview($reviewForm, $task);
+                    return $this->redirect(['tasks/view', 'id' => $review->task_id]);
+                }
             }
         }
 
-        throw new ServerErrorHttpException('Невозможно создать отзыв');
+        return $this->goBack();
     }
 }
